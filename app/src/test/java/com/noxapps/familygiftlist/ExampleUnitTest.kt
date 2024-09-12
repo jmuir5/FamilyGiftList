@@ -1,4 +1,4 @@
-package com.noxapps.wfrpcompanion
+package com.noxapps.familygiftlist
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.noxapps.wfrpcompanion.Home
+package com.noxapps.familygiftlist.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -7,9 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.noxapps.wfrpcompanion.ui.theme.WFRPCompanionTheme
+import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 
 @Composable
 fun HomePage(
@@ -42,7 +41,7 @@ fun Greeting() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    WFRPCompanionTheme {
+    FamilyGiftListTheme {
         Greeting()
     }
 }

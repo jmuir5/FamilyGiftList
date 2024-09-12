@@ -1,4 +1,4 @@
-package com.noxapps.wfrpcompanion.ui.theme
+package com.noxapps.familygiftlist.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

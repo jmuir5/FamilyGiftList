@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.noxapps.wfrpcompanion"
+    namespace = "com.noxapps.familygiftlist"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.noxapps.wfrpcompanion"
+        applicationId = "com.noxapps.familygiftlist"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

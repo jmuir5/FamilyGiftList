@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "WFRP Companion"
+rootProject.name = "FamilyGiftList"
 include(":app")
