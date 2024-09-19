@@ -15,8 +15,17 @@ interface GiftListDao {
     fun update(vararg giftLists:GiftList)
 
     @Delete
-    fun delete(giftList: Gift)
+    fun delete(giftList: GiftList)
 
-    @Query("SELECT * FROM gift")
-    fun getAll(): List<Gift>
+    @Query("SELECT * FROM giftList")
+    fun getAll(): List<GiftList>
+
+    @Query(
+        "SELECT * FROM giftList " +
+        "JOIN Gift ON giftList.id = gift.listID"
+    )
+    fun getAllWithGifts(): Map<GiftList, List<Gift>>
+
+    @Query("SELECT * FROM giftlist WHERE id = :id")
+    fun getById(id:Int):List<GiftList>
 }

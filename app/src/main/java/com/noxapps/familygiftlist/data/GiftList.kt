@@ -4,11 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class GiftList(
+data class GiftList(
     @PrimaryKey(autoGenerate = true) val id:Int,
     val creatorID: Int,
     val creator: String,
-    var listName: String,
-    var list: List<Gift>
+    var listName: String
 ) {
 }

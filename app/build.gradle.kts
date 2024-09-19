@@ -4,6 +4,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
     alias(libs.plugins.compose.compiler)
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
+
 
 
 }
@@ -71,8 +73,10 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
+    //annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
