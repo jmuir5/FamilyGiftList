@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "157463520183",
+    "project_id": "familygiftlist-a3a00",
+    "storage_bucket": "familygiftlist-a3a00.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157463520183:android:1a3ff5d721da6ac1befe32",
+        "android_client_info": {
+          "package_name": "com.noxapps.familygiftlist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiHLe9yQ0msI-OD_mHaaoMnwzC1FG5oT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
     alias(libs.plugins.compose.compiler)
+    id("com.google.gms.google-services")
 
 
 }
@@ -13,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.noxapps.familygiftlist"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -54,6 +55,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.ui.text.google.fonts)
+    val roomVersion = "2.6.1"
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -63,13 +67,28 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    //implementation(libs.play.services.ads)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
+    //implementation(libs.firebase.vertexai)
+    //implementation("")
+
 
 
 
 
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.room.testing)
 
 
     androidTestImplementation(libs.androidx.junit)
