@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -43,12 +44,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FamilyGiftListTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) { innerPadding ->
                     val navController = rememberNavController()
                     Box(
                         Modifier
+                            .fillMaxWidth()
                             .padding(innerPadding)
-                            .fillMaxWidth(),
+                            .consumeWindowInsets(innerPadding),
                         contentAlignment = Alignment.TopCenter
                     ) {
                         NavMain(navController = navController, auth = auth)
@@ -61,7 +66,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NavMain(navController: NavHostController, auth: FirebaseAuth){
-
     val context = LocalContext.current
     val db = Room.databaseBuilder(
         context,
@@ -69,25 +73,23 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
     ).build()
     NavHost(navController = navController, startDestination = Paths.Home.Path){
         composable(Paths.Home.Path) {
-            //val flag = remember{ mutableStateOf(false) }
-            loginCheck(/*flag,*/navController, auth)
-            //if (flag.value) {
-                HomePage(
-                    navController = navController
-                )
-            //}
+            HomePage(
+                auth = auth,
+                navController = navController
+            )
         }
         composable(Paths.MyList.Path) {
-            loginCheck(navController, auth)
             MyListPage(
                 context = context,
                 db = db,
+                auth = auth,
                 navController = navController
             )
         }
         composable(Paths.Login.Path){
             LoginPage(
                 auth,
+                db,
                 navController
             )
         }
@@ -96,13 +98,14 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
 }
 
 
-fun loginCheck(/*flag: MutableState<Boolean>, */navController: NavHostController, auth: FirebaseAuth){
+fun loginCheck(navController: NavHostController, auth: FirebaseAuth){
     val currentUser = auth.currentUser
-    if (currentUser != null) {
+    if (currentUser == null) {
         navController.navigate(Paths.Login.Path){
-            popUpTo(Paths.Login.Path)
+            popUpTo(Paths.Login.Path){
+                inclusive = true
+            }
         }
     }
-    //else flag.value = true
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.Gift
+import com.noxapps.familygiftlist.loginCheck
 import com.noxapps.familygiftlist.myList.ReceivedGiftCard
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 import java.time.Instant
@@ -25,14 +33,16 @@ import java.util.Date
 
 @Composable
 fun HomePage(
-    viewModel: HomeViewModel = HomeViewModel(),
-    navController: NavController
-){
-    Greeting()
+    auth: FirebaseAuth,
+    navController: NavHostController,
+    viewModel: HomeViewModel = HomeViewModel()
+    ){
+    loginCheck(navController, auth)
+    Greeting(navController)
 }
 @Composable
-fun Greeting() {
-    val fakeGifts = (1..5).map{
+fun Greeting(navController: NavHostController) {
+    /*val fakeGifts = (1..5).map{
             Gift(
             0,
             0,
@@ -78,73 +88,91 @@ fun Greeting() {
                 coroutineScope = coroutineScope
             )
         }
-    }
+    }*/
     //ReceivedGiftCard(previewGift)
 
-    /*Text(
-        text = "Display Large",
-        style = MaterialTheme.typography.displayLarge
-    )
-    Text(
-        text = "Display Medium",
-        style = MaterialTheme.typography.displayMedium
-    )
-    Text(
-        text = "Display Small",
-        style = MaterialTheme.typography.displaySmall
-    )
-    Text(
-        text = "Headline Large",
-        style = MaterialTheme.typography.headlineLarge
-    )
-    Text(
-        text = "Headline Medium",
-        style = MaterialTheme.typography.headlineMedium
-    )
-    Text(
-        text = "Headline Small",
-        style = MaterialTheme.typography.headlineSmall
-    )
-    Text(
-        text = "Title Large",
-        style = MaterialTheme.typography.titleLarge
-    )
-    Text(
-        text = "Title Medium",
-        style = MaterialTheme.typography.titleMedium
-    )
-    Text(
-        text = "Title Small",
-        style = MaterialTheme.typography.titleSmall
-    )
-    Text(
+    Column {
+        Text(
+            text = "Home Page",
+            style = MaterialTheme.typography.displayLarge
+        )
+        Button(
+            onClick = {
+                Firebase.auth.signOut()
+                loginCheck(auth = Firebase.auth, navController = navController)
+            }
+        ) {
+            Text("sign out")
+        }
+        /*Text(
+            text = "Display Large",
+            style = MaterialTheme.typography.displayLarge
+        )
+        Text(
+            text = "Display Medium",
+            style = MaterialTheme.typography.displayMedium
+        )
+        Text(
+            text = "Display Small",
+            style = MaterialTheme.typography.displaySmall
+        )
+        Text(
+            text = "Headline Large",
+            style = MaterialTheme.typography.headlineLarge
+        )
+        Text(
+            text = "Headline Medium",
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Text(
+            text = "Headline Small",
+            style = MaterialTheme.typography.headlineSmall
+        )
+        Text(
+            text = "Title Large",
+            style = MaterialTheme.typography.titleLarge
+        )
+        Text(
+            text = "Title Medium",
+            style = MaterialTheme.typography.titleMedium
+        )
+        Text(
+            text = "Title Small",
+            style = MaterialTheme.typography.titleSmall
+        )
+        Text(
             text = "Body Large",
-    style = MaterialTheme.typography.bodyLarge
-    )
-    Text(
-        text = "Body Medium",
-        style = MaterialTheme.typography.bodyMedium
-    )
-    Text(
-        text = "Body Small",
-        style = MaterialTheme.typography.bodySmall
-    )
-    Text(
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = "Body Medium",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text(
+            text = "Body Small",
+            style = MaterialTheme.typography.bodySmall
+        )
+        Text(
             text = "Label Large",
-    style = MaterialTheme.typography.labelLarge
-    )
-    Text(
-        text = "Label Medium",
-        style = MaterialTheme.typography.labelMedium
-    )
-    Text(
-        text = "Label Small",
-        style = MaterialTheme.typography.labelSmall
-    )
+            style = MaterialTheme.typography.labelLarge
+        )
+        Text(
+            text = "Label Medium",
+            style = MaterialTheme.typography.labelMedium
+        )
+        Text(
+            text = "Label Small",
+            style = MaterialTheme.typography.labelSmall
+        )
 
+         */
+
+
+    }
+    /*
     Text(
-        text = "Welcome to the WFRP companion app",
-    )
+            text = "Welcome to the WFRP companion app",
+        )
     Text(
         text = """
             todo:
@@ -185,7 +213,8 @@ fun Greeting() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    FamilyGiftListTheme {
-        Greeting()
+    FamilyGiftListTheme{
+
+        Greeting(navController = rememberNavController())
     }
 }
