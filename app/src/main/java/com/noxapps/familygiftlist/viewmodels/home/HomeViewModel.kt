@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.home
+package com.noxapps.familygiftlist.viewmodels.home
 
 import androidx.lifecycle.ViewModel
 

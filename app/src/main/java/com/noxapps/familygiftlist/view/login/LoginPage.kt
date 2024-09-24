@@ -1,7 +1,6 @@
-package com.noxapps.familygiftlist.login
+package com.noxapps.familygiftlist.view.login
 
 import android.app.Activity
-import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -71,6 +70,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.R
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.viewmodels.login.LoginViewModel
+import com.noxapps.familygiftlist.viewmodels.autofill
+import com.noxapps.familygiftlist.viewmodels.isValidPassword
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -189,7 +191,7 @@ fun LoginCard(
     textFieldColors: TextFieldColors = TextFieldDefaults.colors(),
     textIconColors:Color? = null,
     loginState:MutableState<Boolean>,
-    viewModel:LoginViewModel
+    viewModel: LoginViewModel
 ){
     val context = LocalContext.current
     var email by remember {mutableStateOf("")}
@@ -282,8 +284,6 @@ fun LoginCard(
                     painter = painterResource(id = R.drawable.key_24px),
                     contentDescription = "password",
                     colorFilter = textIconColors?.let{ColorFilter.tint(it)}
-
-
                 )
             },
             trailingIcon = {
@@ -319,17 +319,18 @@ fun LoginCard(
                 .focusRequester(buttonFocReq)
                 .onFocusChanged {
                     if (it.isFocused) {
-                        emptyCheck=true
-                        if((emailMalformedError||emailEmptyError||passwordEmptyError||
+                        emptyCheck = true
+                        if ((emailMalformedError || emailEmptyError || passwordEmptyError ||
                                     passwordMalformedError)
-                        ){
-                            Toast.makeText(
-                                context,
-                                "Please correct the above errors",
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                        }
-                        else {
+                        ) {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Please correct the above errors",
+                                    Toast.LENGTH_SHORT,
+                                )
+                                .show()
+                        } else {
                             viewModel.login(
                                 email,
                                 password,
@@ -395,7 +396,7 @@ fun RegisterCard(
     textFieldColors: TextFieldColors = TextFieldDefaults.colors(),
     textIconColors:Color? = null,
     registerState: MutableState<Boolean>,
-    viewModel:LoginViewModel
+    viewModel: LoginViewModel
 ){
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -480,7 +481,7 @@ fun RegisterCard(
                 .fillMaxWidth()
                 .focusRequester(firstNameFocReq)
                 .autofill(autofillTypes = listOf(AutofillType.PersonFirstName)) {
-                    if(firstName.isEmpty())bDayFocReq.requestFocus()
+                    if (firstName.isEmpty()) bDayFocReq.requestFocus()
                     firstName = it
                 },
             colors = textFieldColors,
@@ -515,7 +516,7 @@ fun RegisterCard(
                 .fillMaxWidth()
                 .focusRequester(lastNameFocReq)
                 .autofill(autofillTypes = listOf(AutofillType.PersonLastName)) {
-                    if(lastName.isEmpty())bDayFocReq.requestFocus()
+                    if (lastName.isEmpty()) bDayFocReq.requestFocus()
                     lastName = it
                 },
             colors = textFieldColors,
@@ -619,7 +620,7 @@ fun RegisterCard(
                 .fillMaxWidth()
                 .focusRequester(emailFocReq)
                 .autofill(autofillTypes = listOf(AutofillType.EmailAddress)) {
-                    if(email.isEmpty())pwFocReq.requestFocus()
+                    if (email.isEmpty()) pwFocReq.requestFocus()
                     email = it
                 },
             colors = textFieldColors,
@@ -754,23 +755,27 @@ fun RegisterCard(
                 .focusRequester(buttonFocReq)
                 .onFocusChanged {
                     if (it.isFocused) {
-                        emptyCheck=true
-                        if((fNameError||lNameError||birthdayError||passwordsMatchError||
-                                    passwordMalformedError||emailMalformedError||emailEmptyError||
-                                    passwordEmptyError||confirmPasswordEmptyError)){
-                            Toast.makeText(
-                                context,
-                                "Please correct the above errors",
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                        }
-                        else {
+                        emptyCheck = true
+                        if ((fNameError || lNameError || birthdayError || passwordsMatchError ||
+                                    passwordMalformedError || emailMalformedError || emailEmptyError ||
+                                    passwordEmptyError || confirmPasswordEmptyError)
+                        ) {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Please correct the above errors",
+                                    Toast.LENGTH_SHORT,
+                                )
+                                .show()
+                        } else {
                             viewModel.register(
                                 firstName = firstName,
                                 lastName = lastName,
                                 email = email,
-                                birthday = Instant.ofEpochMilli(birthdayState.selectedDateMillis!!)
-                                    .atZone(zoneId).toLocalDate(),
+                                birthday = Instant
+                                    .ofEpochMilli(birthdayState.selectedDateMillis!!)
+                                    .atZone(zoneId)
+                                    .toLocalDate(),
                                 password = password,
                                 enableState = enabled,
                                 context = context,

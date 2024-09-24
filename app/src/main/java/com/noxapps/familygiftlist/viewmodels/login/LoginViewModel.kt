@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.login
+package com.noxapps.familygiftlist.viewmodels.login
 
 import android.app.Activity
 import android.content.Context
@@ -12,7 +12,6 @@ import com.noxapps.familygiftlist.Paths
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.User
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 

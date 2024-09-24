@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.login
+package com.noxapps.familygiftlist.viewmodels
 
 fun String.isValidPassword(): Boolean {
     if (length < 8) return false

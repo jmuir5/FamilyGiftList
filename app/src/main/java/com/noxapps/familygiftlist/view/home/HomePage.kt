@@ -1,35 +1,21 @@
-package com.noxapps.familygiftlist.home
+package com.noxapps.familygiftlist.view.home
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.navigation.NavController
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.noxapps.familygiftlist.data.Gift
+import com.noxapps.familygiftlist.viewmodels.home.HomeViewModel
 import com.noxapps.familygiftlist.loginCheck
-import com.noxapps.familygiftlist.myList.ReceivedGiftCard
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.Date
 
 @Composable
 fun HomePage(
@@ -91,7 +77,9 @@ fun Greeting(navController: NavHostController) {
     }*/
     //ReceivedGiftCard(previewGift)
 
-    Column {
+    Column (modifier = Modifier
+        .fillMaxWidth()
+    ){
         Text(
             text = "Home Page",
             style = MaterialTheme.typography.displayLarge
