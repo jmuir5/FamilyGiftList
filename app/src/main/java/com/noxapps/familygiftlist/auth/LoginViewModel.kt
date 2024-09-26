@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.viewmodels.login
+package com.noxapps.familygiftlist.auth
 
 import android.app.Activity
 import android.content.Context

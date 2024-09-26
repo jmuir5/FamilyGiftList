@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.view.login
+package com.noxapps.familygiftlist.auth
 
 import android.app.Activity
 import android.util.Patterns
@@ -70,9 +70,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.R
 import com.noxapps.familygiftlist.data.AppDatabase
-import com.noxapps.familygiftlist.viewmodels.login.LoginViewModel
-import com.noxapps.familygiftlist.viewmodels.autofill
-import com.noxapps.familygiftlist.viewmodels.isValidPassword
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch

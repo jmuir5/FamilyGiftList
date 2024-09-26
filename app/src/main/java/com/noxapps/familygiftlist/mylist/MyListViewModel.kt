@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.viewmodels.mylist
+package com.noxapps.familygiftlist.mylist
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

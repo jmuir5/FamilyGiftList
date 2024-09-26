@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.viewmodels
+package com.noxapps.familygiftlist.auth
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier

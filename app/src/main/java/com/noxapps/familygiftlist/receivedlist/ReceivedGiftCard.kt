@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.view.mylist
+package com.noxapps.familygiftlist.receivedlist
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize

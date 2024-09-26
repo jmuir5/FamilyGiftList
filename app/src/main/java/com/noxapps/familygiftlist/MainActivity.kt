@@ -24,9 +24,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
-import com.noxapps.familygiftlist.view.home.HomePage
-import com.noxapps.familygiftlist.view.login.LoginPage
-import com.noxapps.familygiftlist.view.mylist.MyListPage
+import com.noxapps.familygiftlist.home.HomePage
+import com.noxapps.familygiftlist.auth.LoginPage
+import com.noxapps.familygiftlist.mylist.MyListPage
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth

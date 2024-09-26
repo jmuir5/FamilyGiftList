@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.view.home
+package com.noxapps.familygiftlist.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.noxapps.familygiftlist.viewmodels.home.HomeViewModel
 import com.noxapps.familygiftlist.loginCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 
