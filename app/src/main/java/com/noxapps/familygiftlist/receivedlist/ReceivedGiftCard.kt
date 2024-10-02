@@ -246,7 +246,6 @@ fun giftCardPreview() {
     FamilyGiftListTheme {
         val previewGift = Gift(
             0,
-            0,
             "Example Gift",
             "This is an example of a gift",
             "www.google.com",

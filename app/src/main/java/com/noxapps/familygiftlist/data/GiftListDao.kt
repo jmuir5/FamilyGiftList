@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 
 @Dao
@@ -20,12 +21,18 @@ interface GiftListDao {
     @Query("SELECT * FROM giftList")
     fun getAll(): List<GiftList>
 
-    @Query(
+    /*@Query(
         "SELECT * FROM giftList " +
         "JOIN Gift ON giftList.id = gift.listID"
     )
-    fun getAllWithGifts(): Map<GiftList, List<Gift>>
+    fun getAllWithGifts(): Map<GiftList, List<Gift>>*/
 
-    @Query("SELECT * FROM giftlist WHERE id = :id")
+    @Query("SELECT * FROM giftList WHERE listId = :id")
     fun getById(id:Int):List<GiftList>
+
+    @Transaction
+    @Query("SELECT * FROM GiftList")
+    fun getGiftsWithLists(): List<ListWithGifts>
+
+
 }

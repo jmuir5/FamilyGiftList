@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.noxapps.familygiftlist.Paths
 import com.noxapps.familygiftlist.loginCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 
@@ -85,13 +86,20 @@ fun Greeting(navController: NavHostController) {
         )
         Button(
             onClick = {
-                Firebase.auth.signOut()
+                //Firebase.auth.signOut()
                 loginCheck(auth = Firebase.auth, navController = navController)
             }
         ) {
             Text("sign out")
         }
-        /*Text(
+        Button(
+            onClick = {
+                navController.navigate(Paths.MyList.Path)
+            }
+        ) {
+            Text("myList")
+        }
+        Text(
             text = "Display Large",
             style = MaterialTheme.typography.displayLarge
         )
@@ -152,7 +160,7 @@ fun Greeting(navController: NavHostController) {
             style = MaterialTheme.typography.labelSmall
         )
 
-         */
+
 
 
     }

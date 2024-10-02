@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class GiftList(
-    @PrimaryKey(autoGenerate = true) val id:Int,
+    @PrimaryKey(autoGenerate = true) val listId:Int,
     val creatorID: Int,
-    val creator: String,
-    var listName: String
+    val creatorName: String,
+    var listName: String,
+    var description:String
 ) {
 }

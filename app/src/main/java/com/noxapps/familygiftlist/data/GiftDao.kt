@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 
 @Dao
@@ -17,6 +18,12 @@ interface GiftDao {
     @Delete
     fun delete(gift: Gift)
 
-    @Query("SELECT * FROM gift")
+    @Query("SELECT * FROM Gift")
     fun getAll(): List<Gift>
+
+    @Transaction
+    @Query("SELECT * FROM Gift")
+    fun getGiftsWithLists(): List<GiftWithLists>
+
+
 }

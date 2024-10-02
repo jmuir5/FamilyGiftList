@@ -8,8 +8,7 @@ import java.util.Date
 
 @Entity
 data class Gift(
-    @PrimaryKey(autoGenerate = true)val id: Int,
-    val listID: Int,
+    @PrimaryKey(autoGenerate = true)val giftId: Int,
     var name: String ="",
     var description: String = "",
     var link:String = "",

@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace = "com.noxapps.familygiftlist"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.noxapps.familygiftlist"
@@ -72,6 +72,8 @@ dependencies {
 
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation("androidx.compose.material:material:1.8.0-alpha01")
+
     implementation(libs.androidx.room.runtime)
     //annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
