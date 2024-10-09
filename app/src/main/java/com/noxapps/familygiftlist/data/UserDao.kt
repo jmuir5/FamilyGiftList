@@ -24,5 +24,5 @@ interface UserDao {
     suspend fun getAll(): List<User>
 
     @Query ("SELECT * FROM user WHERE id = :id LIMIT 1")
-    suspend fun getOneById (id: Long) : User
+    suspend fun getOneById (id: String) : User
 }

@@ -6,20 +6,24 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GiftListDao {
     @Insert
-    fun insertAll(vararg giftLists: GiftList)
+    suspend fun insertAll(vararg giftLists: GiftList)
+
+    @Insert
+    suspend fun insert(giftList:GiftList):Long
 
     @Update
-    fun update(vararg giftLists:GiftList)
+    suspend fun update(vararg giftLists:GiftList)
 
     @Delete
-    fun delete(giftList: GiftList)
+    suspend fun delete(giftList: GiftList)
 
     @Query("SELECT * FROM giftList")
-    fun getAll(): List<GiftList>
+    suspend fun getAll(): List<GiftList>
 
     /*@Query(
         "SELECT * FROM giftList " +
@@ -28,11 +32,18 @@ interface GiftListDao {
     fun getAllWithGifts(): Map<GiftList, List<Gift>>*/
 
     @Query("SELECT * FROM giftList WHERE listId = :id")
-    fun getById(id:Int):List<GiftList>
+    suspend fun getById(id:Int):List<GiftList>
+
+    @Query ("SELECT * FROM giftList WHERE listId = :id LIMIT 1")
+    suspend fun getOneById (id: Int) : GiftList
 
     @Transaction
-    @Query("SELECT * FROM GiftList")
-    fun getGiftsWithLists(): List<ListWithGifts>
+    @Query("SELECT * FROM giftList")
+    suspend fun getGiftsWithLists(): List<ListWithGifts>
+
+    @Transaction
+    @Query ("SELECT * FROM giftList WHERE listId = :id LIMIT 1")
+    suspend fun getOneWithListsById (id: Int) : ListWithGifts
 
 
 }

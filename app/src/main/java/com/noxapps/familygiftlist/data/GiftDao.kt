@@ -10,20 +10,27 @@ import androidx.room.Update
 @Dao
 interface GiftDao {
     @Insert
-    fun insertAll(vararg gifts: Gift)
+    suspend fun insertAll(vararg gifts: Gift)
+
+    @Insert
+    suspend fun insert(gift:Gift)
 
     @Update
-    fun update(vararg gifts:Gift)
+    suspend fun update(vararg gifts:Gift)
 
     @Delete
-    fun delete(gift: Gift)
+    suspend fun delete(gift: Gift)
 
     @Query("SELECT * FROM Gift")
-    fun getAll(): List<Gift>
+    suspend fun getAll(): List<Gift>
+
+    @Query ("SELECT * FROM giftList WHERE listId = :id LIMIT 1")
+    suspend fun getOneById (id: Int) : GiftList
+
 
     @Transaction
     @Query("SELECT * FROM Gift")
-    fun getGiftsWithLists(): List<GiftWithLists>
+    suspend fun getGiftsWithLists(): List<GiftWithLists>
 
 
 }

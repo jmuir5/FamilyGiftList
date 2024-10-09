@@ -10,17 +10,22 @@ import androidx.room.Update
 @Dao
 interface ReferenceDao {
     @Insert
-    fun insertAll(vararg references: GiftListGiftCrossReference)
+    suspend fun insertAll(vararg references: GiftListGiftCrossReference)
 
     @Update
-    fun update(vararg references:GiftListGiftCrossReference)
+    suspend fun update(vararg references:GiftListGiftCrossReference)
 
     @Delete
-    fun delete(reference: GiftListGiftCrossReference)
+    suspend fun delete(reference: GiftListGiftCrossReference)
 
     @Query("SELECT * FROM GiftListGiftCrossReference")
-    fun getAll(): List<GiftListGiftCrossReference>
+    suspend fun getAll(): List<GiftListGiftCrossReference>
 
+    @Query("SELECT * FROM GiftListGiftCrossReference WHERE listId = :id")
+    suspend fun getByListId(id:Int):List<GiftListGiftCrossReference>
+
+    @Query("SELECT * FROM GiftListGiftCrossReference WHERE giftId = :id")
+    suspend fun getByGiftId(id:Int):List<GiftListGiftCrossReference>
 
 
 }

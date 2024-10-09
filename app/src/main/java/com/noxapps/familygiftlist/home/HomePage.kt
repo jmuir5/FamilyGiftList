@@ -14,20 +14,24 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.Paths
+import com.noxapps.familygiftlist.data.User
+import com.noxapps.familygiftlist.data.sampleData
 import com.noxapps.familygiftlist.loginCheck
+import com.noxapps.familygiftlist.setUser
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 
 @Composable
 fun HomePage(
     auth: FirebaseAuth,
+    currentUser: User?,
     navController: NavHostController,
     viewModel: HomeViewModel = HomeViewModel()
     ){
     loginCheck(navController, auth)
-    Greeting(navController)
+    Greeting(currentUser, navController)
 }
 @Composable
-fun Greeting(navController: NavHostController) {
+fun Greeting(currentUser: User?, navController: NavHostController) {
     /*val fakeGifts = (1..5).map{
             Gift(
             0,
@@ -82,6 +86,10 @@ fun Greeting(navController: NavHostController) {
     ){
         Text(
             text = "Home Page",
+            style = MaterialTheme.typography.displayLarge
+        )
+        Text(
+            text = "logged in as: ${currentUser?.firstName} ${currentUser?.lastName}",
             style = MaterialTheme.typography.displayLarge
         )
         Button(
@@ -210,6 +218,9 @@ fun Greeting(navController: NavHostController) {
 fun GreetingPreview() {
     FamilyGiftListTheme{
 
-        Greeting(navController = rememberNavController())
+        Greeting(
+            currentUser = sampleData.user,
+            navController = rememberNavController()
+        )
     }
 }
