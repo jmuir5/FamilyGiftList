@@ -21,4 +21,18 @@ data class Gift(
     var purchasedBy: String = "",
     var purchaseProof: String = ""
     ){
+    constructor(oldGift:Gift, newId:Int) : this(
+        giftId = newId,
+        name = oldGift.name,
+        description = oldGift.description ,
+        link= oldGift.link,
+        price = oldGift.price,
+        reserved = oldGift.reserved,
+        reservedDate = oldGift.reservedDate,
+        reservedBy = oldGift.reservedBy,
+        purchased = oldGift.purchased,
+        purchaseDate = oldGift.purchaseDate,
+        purchasedBy = oldGift.purchasedBy,
+        purchaseProof = oldGift.purchaseProof
+    )
 }

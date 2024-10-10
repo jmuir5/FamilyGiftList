@@ -1,13 +1,9 @@
 package com.noxapps.familygiftlist.mygifts
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.material.BottomDrawerState
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
@@ -17,108 +13,67 @@ import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.GiftListGiftCrossReference
-import com.noxapps.familygiftlist.data.sampleData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class MyGiftsViewModel(val context: Context, val db:AppDatabase, val auth: FirebaseAuth): ViewModel() {
-    //private val giftListDao = db.giftListDao()
-    //private val giftDao = db.giftDao()
-    //private val allLists = giftListDao.getAllWithGifts()
-    //var currentListIndex = 1
-    //var currentList = allLists.keys.toList()[currentListIndex]
-    val firebaseDB = Firebase.database.reference
-    val previewListOfGifts = (0..10).map{ sampleData.sampleGift}
-    val previewListOfLists = (0..10).map{sampleData.sampleList}
-    val emptyListOfGifts = listOf<Gift>()
-    val emptyListOfLists = listOf<GiftList>()
+class MyGiftsViewModel(val db:AppDatabase, val auth: FirebaseAuth): ViewModel() {
+    private val firebaseDB = Firebase.database.reference
 
-    var listOfLists = listOf<GiftList>()
-    init{
-
-    }
-    /*fun populateListOfLists(target: SnapshotStateList<GiftList>, flag:MutableState<Boolean>){
-        target.clear()
-        viewModelScope.launch {
-            val lists = db.giftListDao().getAll()
-            MainScope().launch {
-                lists.forEach {
-                    target.add(it)
-                }
-                flag.value = true
-            }
-
-        }
-    }*/
-
-
-    fun populateListOfGifts(target: SnapshotStateList<Gift>, boolList: SnapshotStateList<MutableState<Boolean>>, flag:MutableState<Boolean>){
-        target.clear()
-        boolList.clear()
-        viewModelScope.launch {
-            val lists = db.giftDao().getAll()
-            MainScope().launch {
-                lists.forEach {
-                    target.add(it)
-                    boolList.add(mutableStateOf(false))
-                }
-                flag.value = true
-            }
-
-        }
-    }
-
-    fun saveList(
+    fun saveGift(
         enabledState: MutableState<Boolean>,
         drawerState: BottomDrawerState,
-        listObject: GiftList,
-        initialGifts:List<Int>,
+        giftObject: Gift,
+        initialLists:List<Int>,
         navController:NavHostController,
         coroutineScope: CoroutineScope
     ){
-        Log.d("MyList", "function Started")
         enabledState.value = false
         try {
             //local
-            Log.d("MyList", "local started")
             coroutineScope.launch {
-                db.giftListDao().insertAll(listObject)
-                initialGifts.forEach { giftId ->
+                val newId = db.giftDao().insert(giftObject)
+                Log.d("MyList", "newID = $newId")
+                Log.d("MyList", "newID.toInt() = ${newId.toInt()}")
+
+
+                initialLists.forEach { listId ->
                     db.referenceDao().insertAll(
                         GiftListGiftCrossReference(
-                            listId = listObject.listId,
-                            giftId = giftId
+                            listId = listId,
+                            giftId = newId.toInt()
                         )
                     )
                 }
-            }
-            Log.d("MyList", "local finished, server started")
-            //to server
-            firebaseDB
-                .child("${auth.currentUser?.uid}")
-                .child("Lists")
-                .child("${listObject.listId}")
-                .setValue(listObject)
-            initialGifts.forEach { giftId ->
+                //to server
+                val newGift = Gift(giftObject, newId.toInt())
                 firebaseDB
                     .child("${auth.currentUser?.uid}")
-                    .child("Relationships")
-                    .child("${listObject.listId}")
-                    .child("$giftId")
-                    .setValue(true)
+                    .child("Gifts")
+                    .child("${newGift.giftId}")
+                    .setValue(newGift)
+                initialLists.forEach { listId ->
+                    firebaseDB
+                        .child("${auth.currentUser?.uid}")
+                        .child("Relationships")
+                        .child("$listId")
+                        .child("${newGift.giftId}")
+                        .setValue(true)
+                }
+                enabledState.value = true
+                coroutineScope.launch {
+                    drawerState.close()
+                }
+                MainScope().launch {
+                    navController.navigate("${Paths.SingleGift.Path}/${newId}")
+                }
             }
+
         }
         catch(e:Exception){
             Log.d("MyList", "function failed")
             Log.e("CreateList error", e.toString())
         }
-        enabledState.value = true
-        coroutineScope.launch {
-            drawerState.close()
-        }
-        Log.d("MyList", "function finished")
-        navController.navigate(Paths.SingleList.Path)
 
     }
 

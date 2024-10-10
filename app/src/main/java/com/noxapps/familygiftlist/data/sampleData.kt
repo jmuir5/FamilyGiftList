@@ -75,7 +75,7 @@ class sampleData {
             LocalDate.now()
         )
 
-        val nullGift = GiftList(
+        val nullList = GiftList(
             -1,
             "empty",
             "empty",
@@ -83,7 +83,27 @@ class sampleData {
             "empty placeholder list"
         )
 
+        val nullGift:Gift = Gift(
+            0,
+            "Null Gift",
+            "Null Gift",
+            "",
+            0,
+            false,
+            LocalDate.now(),
+            "",
+            false,
+            LocalDate.now(),
+            "",
+            ""
+            )
+
         val nullListWithGifts = ListWithGifts(
+            nullList,
+            emptyList()
+        )
+
+        val nullGiftWithLists = GiftWithLists(
             nullGift,
             emptyList()
         )

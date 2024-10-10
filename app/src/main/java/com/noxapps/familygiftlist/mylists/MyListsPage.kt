@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
@@ -54,6 +55,9 @@ fun MyListsPage(
 
     val expandedListCard = remember{mutableStateOf(-1)}
 
+    val headerSize = remember{ mutableStateOf(IntSize.Zero) }
+
+
     LaunchedEffect(coroutineScope) {
         listOfLists = db.giftListDao().getGiftsWithLists()
     }
@@ -79,6 +83,7 @@ fun MyListsPage(
             if(showCreateDrawer){
                 CreateListDialogue(
                     state = createDrawerState,
+                    headerSize = headerSize,
                     scope = coroutineScope,
                     user = user,
                     navController = navController,
@@ -91,6 +96,7 @@ fun MyListsPage(
         MyListsBody(
             coroutineScope = coroutineScope,
             drawerState = createDrawerState,
+            headerSize = headerSize,
             listOfLists = listOfLists,
             expandedListCard = expandedListCard,
             navController = navController
@@ -119,9 +125,11 @@ fun createListPreview() {
             val navController = rememberNavController()
             val auth = Firebase.auth
             val viewModel = MyListsViewModel(db, auth)
+            val headerSize = remember{mutableStateOf(IntSize.Zero)}
 
             CreateListDialogue(
                 state = state,
+                headerSize = headerSize,
                 scope = coroutineScope,
                 user = user,
                 db = db,
@@ -197,10 +205,12 @@ fun MyListBodyPreview() {
             val listOfLists = sampleData.sampleListOfListsWithGifts
             val expandedListCard = remember{mutableIntStateOf(-1)}
             val navController = rememberNavController()
+            val headerSize = remember{mutableStateOf(IntSize.Zero)}
 
             MyListsBody(
                 coroutineScope = coroutineScope,
                 drawerState = drawerState,
+                headerSize = headerSize,
                 listOfLists = listOfLists,
                 expandedListCard = expandedListCard,
                 navController = navController

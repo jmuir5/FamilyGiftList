@@ -16,6 +16,8 @@ import com.noxapps.familygiftlist.auth.LoginPage
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.sampleData
 import com.noxapps.familygiftlist.home.HomePage
+import com.noxapps.familygiftlist.mygifts.MyGiftsPage
+import com.noxapps.familygiftlist.mygifts.SingleGiftPage
 import com.noxapps.familygiftlist.mylists.MyListsPage
 import com.noxapps.familygiftlist.mylists.SingleListPage
 
@@ -35,14 +37,7 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
             HomePage(
                 auth = auth,
                 currentUser = currentUser.value,
-                navController = navController
-            )
-        }
-        composable(Paths.MyList.Path) {
-            MyListsPage(
                 db = db,
-                auth = auth,
-                user = currentUser.value,
                 navController = navController
             )
         }
@@ -53,14 +48,45 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
                 navController
             )
         }
+        composable(Paths.MyLists.Path) {
+            MyListsPage(
+                db = db,
+                auth = auth,
+                user = currentUser.value,
+                navController = navController
+            )
+        }
+        composable(Paths.MyGifts.Path) {
+            MyGiftsPage(
+                db = db,
+                auth = auth,
+                user = currentUser.value,
+                navController = navController
+            )
+        }
         composable(
             route = "${Paths.SingleList.Path}/{listId}",
-            arguments = listOf(navArgument("listId") { type = NavType.IntType }),
-
-            ) {
+            arguments = listOf(navArgument("listId") { type = NavType.IntType })
+        ) {
             val listId = it.arguments?.getInt("listId")
             if (listId != null) {
                 SingleListPage(
+                    listId,
+                    db,
+                    navController
+                )
+            } else {
+                //todo: error code
+            }
+
+        }
+        composable(
+            route = "${Paths.SingleGift.Path}/{giftId}",
+            arguments = listOf(navArgument("giftId") { type = NavType.IntType })
+        ) {
+            val listId = it.arguments?.getInt("giftId")
+            if (listId != null) {
+                SingleGiftPage(
                     listId,
                     db,
                     navController

@@ -36,7 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.noxapps.familygiftlist.R
@@ -48,7 +50,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun ColumnScope.CreateListDialogue(state: BottomDrawerState, scope: CoroutineScope, user: User, db: AppDatabase, navController: NavHostController, viewModel: MyListsViewModel){
+fun ColumnScope.CreateListDialogue(
+    state: BottomDrawerState,
+    scope: CoroutineScope,
+    headerSize:MutableState<IntSize>,
+    user: User,
+    db: AppDatabase,
+    navController: NavHostController,
+    viewModel: MyListsViewModel
+){
     var listName by remember { mutableStateOf("") }
     var listDesc by remember { mutableStateOf("") }
 
@@ -67,13 +77,15 @@ fun ColumnScope.CreateListDialogue(state: BottomDrawerState, scope: CoroutineSco
     }
 
     var listOfGifts by remember { mutableStateOf<List<Gift>>(emptyList()) }
-
     val selectedGifts = remember { mutableStateListOf<MutableState<Boolean>>() }
-
     val coroutineScope = rememberCoroutineScope()
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+
 
     LaunchedEffect(coroutineScope) {
         listOfGifts = db.giftDao().getAll()
+        (0..listOfGifts.size).map {selectedGifts.add(mutableStateOf(false)) }
+
     }
     LaunchedEffect(state.isOpen) {
         state.expand()
@@ -113,7 +125,7 @@ fun ColumnScope.CreateListDialogue(state: BottomDrawerState, scope: CoroutineSco
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxHeight(0.7f)
+            .height((screenHeight - (headerSize.value.height -8)).dp)
             .padding(4.dp)
 
     ) {
@@ -129,6 +141,7 @@ fun ColumnScope.CreateListDialogue(state: BottomDrawerState, scope: CoroutineSco
             colors = textFieldColors,
             enabled = enabled.value,
             shape = RectangleShape,
+            isError = listNameError,
             label = {
                 if (listNameError)
                     Text("Name can not be empty")

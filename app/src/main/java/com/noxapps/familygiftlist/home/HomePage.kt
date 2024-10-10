@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.User
 import com.noxapps.familygiftlist.data.sampleData
@@ -24,13 +25,18 @@ fun HomePage(
     auth: FirebaseAuth,
     currentUser: User?,
     navController: NavHostController,
+    db:AppDatabase,
     viewModel: HomeViewModel = HomeViewModel()
     ){
     loginCheck(navController, auth)
-    Greeting(currentUser, navController)
+    Greeting(currentUser, db,  navController)
 }
 @Composable
-fun Greeting(currentUser: User?, navController: NavHostController) {
+fun Greeting(
+    currentUser: User?,
+    db:AppDatabase,
+    navController: NavHostController
+) {
     /*val fakeGifts = (1..5).map{
             Gift(
             0,
@@ -101,10 +107,24 @@ fun Greeting(currentUser: User?, navController: NavHostController) {
         }
         Button(
             onClick = {
-                navController.navigate(Paths.MyList.Path)
+                navController.navigate(Paths.MyLists.Path)
             }
         ) {
             Text("myList")
+        }
+        Button(
+            onClick = {
+                navController.navigate(Paths.MyGifts.Path)
+            }
+        ) {
+            Text("myGifts")
+        }
+        Button(
+            onClick = {
+                db.clearAllTables()
+            }
+        ) {
+            Text("clean database")
         }
         Text(
             text = "Display Large",
@@ -217,9 +237,9 @@ fun Greeting(currentUser: User?, navController: NavHostController) {
 fun GreetingPreview() {
     FamilyGiftListTheme{
 
-        Greeting(
+        /*Greeting(
             currentUser = sampleData.sampleUser,
             navController = rememberNavController()
-        )
+        )*/
     }
 }

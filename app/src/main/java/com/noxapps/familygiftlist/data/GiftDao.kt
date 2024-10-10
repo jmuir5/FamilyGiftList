@@ -13,7 +13,7 @@ interface GiftDao {
     suspend fun insertAll(vararg gifts: Gift)
 
     @Insert
-    suspend fun insert(gift:Gift)
+    suspend fun insert(gift:Gift):Long
 
     @Update
     suspend fun update(vararg gifts:Gift)
@@ -24,13 +24,17 @@ interface GiftDao {
     @Query("SELECT * FROM Gift")
     suspend fun getAll(): List<Gift>
 
-    @Query ("SELECT * FROM giftList WHERE listId = :id LIMIT 1")
-    suspend fun getOneById (id: Int) : GiftList
+    @Query ("SELECT * FROM Gift WHERE giftId = :id LIMIT 1")
+    suspend fun getOneById (id: Int) : Gift
 
 
     @Transaction
     @Query("SELECT * FROM Gift")
     suspend fun getGiftsWithLists(): List<GiftWithLists>
+
+    @Transaction
+    @Query("SELECT * FROM Gift WHERE giftId = :id LIMIT 1")
+    suspend fun getOneWithListsById(id: Int): GiftWithLists
 
 
 }

@@ -22,7 +22,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.noxapps.familygiftlist.R
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
 fun MyListsBody(
     coroutineScope: CoroutineScope,
     drawerState: BottomDrawerState,
+    headerSize: MutableState<IntSize>,
     listOfLists: List<ListWithGifts>,
     expandedListCard: MutableState<Int>,
     navController: NavHostController
@@ -47,7 +50,10 @@ fun MyListsBody(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
-                .height(IntrinsicSize.Min),
+                .height(IntrinsicSize.Min)
+                .onGloballyPositioned { coordinates ->
+                    headerSize.value = coordinates.size
+                },
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -74,13 +80,12 @@ fun MyListsBody(
         }
         LazyColumn() {
             if (listOfLists.isEmpty()) {
-                item {
+                item { //todo no lists dialogue
                     Button(
                         onClick = {
                             coroutineScope.launch {
                                 drawerState.open()
                             }
-
                         }
                     ) {
                         Text(text = "Create New List +")

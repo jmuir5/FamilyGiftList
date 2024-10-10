@@ -17,7 +17,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MyListsViewModel(val db:AppDatabase, val auth: FirebaseAuth): ViewModel() {
-    val firebaseDB = Firebase.database.reference
+    private val firebaseDB = Firebase.database.reference
 
 
     fun saveList(
