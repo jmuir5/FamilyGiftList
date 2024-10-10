@@ -61,10 +61,9 @@ import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.User
-import com.noxapps.familygiftlist.loginCheck
+import com.noxapps.familygiftlist.navigation.loginCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable

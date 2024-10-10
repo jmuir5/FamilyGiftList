@@ -12,7 +12,7 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.noxapps.familygiftlist.Paths
+import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
@@ -29,8 +29,8 @@ class MyGiftsViewModel(val context: Context, val db:AppDatabase, val auth: Fireb
     //var currentListIndex = 1
     //var currentList = allLists.keys.toList()[currentListIndex]
     val firebaseDB = Firebase.database.reference
-    val previewListOfGifts = (0..10).map{ sampleData.gift}
-    val previewListOfLists = (0..10).map{sampleData.list}
+    val previewListOfGifts = (0..10).map{ sampleData.sampleGift}
+    val previewListOfLists = (0..10).map{sampleData.sampleList}
     val emptyListOfGifts = listOf<Gift>()
     val emptyListOfLists = listOf<GiftList>()
 

@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.mylist
+package com.noxapps.familygiftlist.mylists
 
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel

@@ -13,11 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.noxapps.familygiftlist.Paths
+import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.User
 import com.noxapps.familygiftlist.data.sampleData
-import com.noxapps.familygiftlist.loginCheck
-import com.noxapps.familygiftlist.setUser
+import com.noxapps.familygiftlist.navigation.loginCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 
 @Composable
@@ -219,7 +218,7 @@ fun GreetingPreview() {
     FamilyGiftListTheme{
 
         Greeting(
-            currentUser = sampleData.user,
+            currentUser = sampleData.sampleUser,
             navController = rememberNavController()
         )
     }

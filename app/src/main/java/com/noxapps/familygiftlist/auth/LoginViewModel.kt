@@ -8,7 +8,7 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
-import com.noxapps.familygiftlist.Paths
+import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.User
 import kotlinx.coroutines.CoroutineScope

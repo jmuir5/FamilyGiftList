@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist
+package com.noxapps.familygiftlist.navigation
 
 sealed class Paths(val Path:String) {
     object Home: Paths("Home")

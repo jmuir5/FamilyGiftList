@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.mylist
+package com.noxapps.familygiftlist.mylists
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.TopAppBar
@@ -12,9 +12,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.noxapps.familygiftlist.data.AppDatabase
-import com.noxapps.familygiftlist.data.GiftList
-import com.noxapps.familygiftlist.data.GiftWithLists
-import com.noxapps.familygiftlist.data.ListWithGifts
 import com.noxapps.familygiftlist.data.sampleData
 
 @Composable

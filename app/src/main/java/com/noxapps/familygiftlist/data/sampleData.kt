@@ -31,7 +31,7 @@ class sampleData {
     )
 
     companion object {
-        val gift:Gift = Gift(
+        val sampleGift:Gift = Gift(
             0,
             "Example Gift",
             "This is an example of a gift",
@@ -46,17 +46,31 @@ class sampleData {
             "",
 
             )
-        val list = GiftList(
+        val sampleList = GiftList(
             0,
             "0",
             "Example Creator",
             "Example List",
             "This is an example of a gift list used for testing purposes",
         )
-        val user = User(
+        val sampleUser = User(
             "0",
-            "Empty user",
-            "Empty",
+            "example@gmail.com",
+            "Example",
+            "User",
+            LocalDate.now()
+        )
+
+        val sampleListOfGifts = (0..10).map{sampleGift}
+        val sampleListOfLists = (0..10).map{sampleList}
+
+        val sampleListWithGifts = ListWithGifts(sampleList, sampleListOfGifts)
+        val sampleListOfListsWithGifts = (0..10).map{ sampleListWithGifts}
+
+        val nullUser = User(
+            "-1",
+            "null email",
+            "Null",
             "User",
             LocalDate.now()
         )
@@ -71,7 +85,11 @@ class sampleData {
 
         val nullListWithGifts = ListWithGifts(
             nullGift,
-            emptyList())
+            emptyList()
+        )
+
+        val nullListOfGifts = emptyList<Gift>()
+        val nullListOfLists = emptyList<GiftList>()
 
     }
 }
