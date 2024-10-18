@@ -59,7 +59,7 @@ fun MyListsPage(
 
 
     LaunchedEffect(coroutineScope) {
-        listOfLists = db.giftListDao().getGiftsWithLists()
+        listOfLists = db.userDao().getOneWithListsAndGiftsById(user.userId).listsWithGifts//giftListDao().getGiftsWithLists()
     }
 
     BackHandler(

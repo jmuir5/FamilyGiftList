@@ -9,6 +9,7 @@ import java.util.Date
 @Entity
 data class Gift(
     @PrimaryKey(autoGenerate = true)val giftId: Int,
+    var creatorId: String = "",
     var name: String ="",
     var description: String = "",
     var link:String = "",
@@ -23,6 +24,7 @@ data class Gift(
     ){
     constructor(oldGift:Gift, newId:Int) : this(
         giftId = newId,
+        creatorId = oldGift.creatorId,
         name = oldGift.name,
         description = oldGift.description ,
         link= oldGift.link,

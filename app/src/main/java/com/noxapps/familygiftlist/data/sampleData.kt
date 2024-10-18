@@ -5,6 +5,7 @@ import java.time.LocalDate
 class sampleData {
     val previewGift = Gift(
         0,
+        "exampleUser",
         "Example Gift",
         "This is an example of a gift",
         "www.google.com",
@@ -33,6 +34,7 @@ class sampleData {
     companion object {
         val sampleGift:Gift = Gift(
             0,
+            "exampleUser",
             "Example Gift",
             "This is an example of a gift",
             "www.google.com",
@@ -85,6 +87,7 @@ class sampleData {
 
         val nullGift:Gift = Gift(
             0,
+            "null User",
             "Null Gift",
             "Null Gift",
             "",

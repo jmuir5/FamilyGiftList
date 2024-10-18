@@ -38,7 +38,7 @@ class MyGiftsViewModel(val db:AppDatabase, val auth: FirebaseAuth): ViewModel() 
 
 
                 initialLists.forEach { listId ->
-                    db.referenceDao().insertAll(
+                    db.referenceDao().insert(
                         GiftListGiftCrossReference(
                             listId = listId,
                             giftId = newId.toInt()

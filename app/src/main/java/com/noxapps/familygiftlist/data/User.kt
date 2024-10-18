@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 @Entity
 data class User (
-    @PrimaryKey val id:String,
+    @PrimaryKey val userId:String,
     val email:String,
     var firstName:String,
     var lastName:String,

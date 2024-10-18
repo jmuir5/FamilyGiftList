@@ -2,10 +2,19 @@ package com.noxapps.familygiftlist.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -14,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.GiftListGiftCrossReference
 import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.User
 import com.noxapps.familygiftlist.data.sampleData
@@ -27,10 +37,12 @@ fun HomePage(
     navController: NavHostController,
     db:AppDatabase,
     viewModel: HomeViewModel = HomeViewModel()
-    ){
+){
     loginCheck(navController, auth)
     Greeting(currentUser, db,  navController)
 }
+
+
 @Composable
 fun Greeting(
     currentUser: User?,
@@ -91,15 +103,15 @@ fun Greeting(
     ){
         Text(
             text = "Home Page",
-            style = MaterialTheme.typography.displayLarge
+            style = MaterialTheme.typography.headlineSmall
         )
         Text(
             text = "logged in as: ${currentUser?.firstName} ${currentUser?.lastName}",
-            style = MaterialTheme.typography.displayLarge
+            style = MaterialTheme.typography.headlineSmall
         )
         Button(
             onClick = {
-                //Firebase.auth.signOut()
+                Firebase.auth.signOut()
                 loginCheck(auth = Firebase.auth, navController = navController)
             }
         ) {
@@ -121,11 +133,28 @@ fun Greeting(
         }
         Button(
             onClick = {
-                db.clearAllTables()
+                //db.clearAllTables()
             }
         ) {
             Text("clean database")
         }
+        var relationships by remember {mutableStateOf<List<GiftListGiftCrossReference>>(emptyList())}
+        val coroutineScope = rememberCoroutineScope()
+        LaunchedEffect(coroutineScope) {
+            relationships = db.referenceDao().getAll()
+        }
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            item(){
+                Text("Relationships (${relationships.size}) :")
+            }
+            itemsIndexed(relationships){ index, relationship ->
+                Text("relationship #$index, listId = ${relationship.listId}, GiftId = ${relationship.giftId}")
+            }
+        }
+
         Text(
             text = "Display Large",
             style = MaterialTheme.typography.displayLarge

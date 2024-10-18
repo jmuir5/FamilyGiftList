@@ -1,6 +1,8 @@
 package com.noxapps.familygiftlist.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,8 +32,17 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
         AppDatabase::class.java, "gift-app-database"
     ).fallbackToDestructiveMigration().build()
     val currentUser = remember { mutableStateOf( sampleData.nullUser ) }
+    LaunchedEffect(coroutineScope) {
+        try{
+            auth.currentUser?.uid?.let { currentUser.value = db.userDao().getOneById(it) }
+        }
+        catch(e: Exception){
+            Log.e("login check failed", "login Error")
+        }
 
-    auth.currentUser?.uid?.let { setUser(currentUser, db, it, coroutineScope) }
+    }
+
+    //auth.currentUser?.uid?.let { setUser(currentUser, db, it, coroutineScope) }
     NavHost(navController = navController, startDestination = Paths.Home.Path) {
         composable(Paths.Home.Path) {
             HomePage(
@@ -44,6 +55,7 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
         composable(Paths.Login.Path) {
             LoginPage(
                 auth,
+                currentUser.value,
                 db,
                 navController
             )

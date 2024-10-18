@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 
 @Dao
@@ -23,6 +24,22 @@ interface UserDao {
     @Query("SELECT * FROM user")
     suspend fun getAll(): List<User>
 
-    @Query ("SELECT * FROM user WHERE id = :id LIMIT 1")
+    @Query ("SELECT * FROM user WHERE userId = :id LIMIT 1")
     suspend fun getOneById (id: String) : User
+
+    @Transaction
+    @Query ("SELECT * FROM user WHERE userId = :id LIMIT 1")
+    suspend fun getOneWithGiftsById (id: String) : UserWithGifts
+
+    @Transaction
+    @Query ("SELECT * FROM user WHERE userId = :id LIMIT 1")
+    suspend fun getOneWithListsById (id: String) : UserWithLists
+
+    @Transaction
+    @Query ("SELECT * FROM user WHERE userId = :id LIMIT 1")
+    suspend fun getOneWithGiftsAndListsById (id: String) : UserWithGiftsWithLists
+
+    @Transaction
+    @Query ("SELECT * FROM user WHERE userId = :id LIMIT 1")
+    suspend fun getOneWithListsAndGiftsById (id: String) : UserWithListsWithGifts
 }

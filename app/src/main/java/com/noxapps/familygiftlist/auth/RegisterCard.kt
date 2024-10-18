@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -160,7 +161,9 @@ fun RegisterCard(
             },
             singleLine = true,
             shape = RectangleShape,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     lastNameFocReq.requestFocus()
@@ -300,7 +303,10 @@ fun RegisterCard(
             },
             singleLine = true,
             shape = RectangleShape,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     pwFocReq.requestFocus()
@@ -348,7 +354,11 @@ fun RegisterCard(
                 PasswordVisualTransformation(),
             singleLine = true,
             shape = RectangleShape,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next,
+                autoCorrectEnabled = false
+            ),
             keyboardActions = KeyboardActions(
                 onDone = {
                     confFocReq.requestFocus()
@@ -399,7 +409,11 @@ fun RegisterCard(
                 PasswordVisualTransformation(),
             singleLine = true,
             shape = RectangleShape,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next,
+                autoCorrectEnabled = false
+            ),
             keyboardActions = KeyboardActions(
                 onDone = {
                     buttonFocReq.requestFocus()

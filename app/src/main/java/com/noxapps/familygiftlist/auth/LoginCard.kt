@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -113,7 +114,10 @@ fun LoginCard(
             },
             singleLine = true,
             shape = RectangleShape,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     pwFocReq.requestFocus()
@@ -160,7 +164,11 @@ fun LoginCard(
                 PasswordVisualTransformation(),
             singleLine = true,
             shape = RectangleShape,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+                autoCorrectEnabled = false
+            ),
             keyboardActions = KeyboardActions(
                 onDone = {
                     buttonFocReq.requestFocus()

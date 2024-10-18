@@ -25,3 +25,41 @@ data class GiftWithLists(
     val lists: List<GiftList>
 ) {
 }
+
+data class UserWithGifts(
+    @Embedded val user: User,
+    @Relation(
+        parentColumn = "userId",
+        entityColumn = "creatorId",
+    )
+    val gifts:List<Gift>
+)
+
+data class UserWithGiftsWithLists(
+    @Embedded val user: User,
+    @Relation(
+        entity = Gift::class,
+        parentColumn = "userId",
+        entityColumn = "creatorId",
+    )
+    val giftsWithLists: List<GiftWithLists>
+)
+
+data class UserWithLists(
+    @Embedded val user: User,
+    @Relation(
+        parentColumn = "userId",
+        entityColumn = "creatorId",
+    )
+    val lists:List<GiftList>
+)
+
+data class UserWithListsWithGifts(
+    @Embedded val user: User,
+    @Relation(
+        entity = GiftList::class,
+        parentColumn = "userId",
+        entityColumn = "creatorId",
+    )
+    val listsWithGifts: List<ListWithGifts>
+)

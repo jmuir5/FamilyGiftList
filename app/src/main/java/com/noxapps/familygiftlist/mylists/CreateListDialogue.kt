@@ -83,12 +83,12 @@ fun ColumnScope.CreateListDialogue(
 
 
     LaunchedEffect(coroutineScope) {
-        listOfGifts = db.giftDao().getAll()
+        listOfGifts = db.userDao().getOneWithGiftsById(user.userId).gifts//giftDao().getAll()
         (0..listOfGifts.size).map {selectedGifts.add(mutableStateOf(false)) }
 
     }
-    LaunchedEffect(state.isOpen) {
-        state.expand()
+    LaunchedEffect(state.currentValue) {
+        if(!state.isClosed)state.expand()
     }
 
 
@@ -198,18 +198,20 @@ fun ColumnScope.CreateListDialogue(
                 Log.d("MyList", "Button Clicked")
                 emptyCheck = true
                 if (!listNameError) {
+                    val initialGifts = mutableListOf<Int>()
+                    (0..<selectedGifts.size).map{if(selectedGifts[it].value) initialGifts.add(listOfGifts[it].giftId)}
                     Log.d("MyList", "error check passed")
                     viewModel.saveList(
                         enabledState = enabled,
                         drawerState = state,
                         listObject = GiftList(
                             0,
-                            user.id,
+                            user.userId,
                             "${user.firstName} ${user.lastName}",
                             listName,
                             listDesc
                         ),
-                        initialGifts = listOf<Int>(),//inital gifts
+                        initialGifts = initialGifts,//inital gifts
                         navController = navController,
                         coroutineScope = coroutineScope
                     )

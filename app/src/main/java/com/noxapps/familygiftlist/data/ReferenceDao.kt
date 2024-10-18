@@ -12,6 +12,9 @@ interface ReferenceDao {
     @Insert
     suspend fun insertAll(vararg references: GiftListGiftCrossReference)
 
+    @Insert
+    suspend fun insert(reference: GiftListGiftCrossReference)
+
     @Update
     suspend fun update(vararg references:GiftListGiftCrossReference)
 

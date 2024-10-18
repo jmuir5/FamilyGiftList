@@ -58,8 +58,6 @@ android {
 
 dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
-    val roomVersion = "2.6.1"
-
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -73,6 +71,19 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation("androidx.compose.material:material:1.8.0-alpha01")
+    implementation("org.jsoup:jsoup:1.14.3")
+
+    /*val ktorVersion = "3.0.0"
+
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-json:$ktorVersion")
+    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")*/
+
+    //implementation("com.github.lukasroberts:AndroidLinkView:1.0.1")
+
+
 
     implementation(libs.androidx.room.runtime)
     //annotationProcessor(libs.androidx.room.compiler)

@@ -30,6 +30,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.User
+import com.noxapps.familygiftlist.navigation.loggedCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -38,6 +40,7 @@ import kotlin.system.exitProcess
 @Composable
 fun LoginPage(
     auth: FirebaseAuth,
+    user:User?,
     db: AppDatabase,
     navHostController: NavHostController,
     viewModel: LoginViewModel = LoginViewModel(
@@ -46,6 +49,7 @@ fun LoginPage(
         navHostController
     )
 ){
+    loggedCheck(navHostController, auth, user )
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 

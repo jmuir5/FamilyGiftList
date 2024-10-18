@@ -39,7 +39,7 @@ fun SingleListPage(
         Text("This is a list page")
         Text("List Name = ${thisList.giftList.listName}")
         Text("List id = ${thisList.giftList.listId}")
-        Text("Creator id = ${thisList.giftList.creatorID}")
+        Text("Creator id = ${thisList.giftList.creatorId}")
         Text("Creator Name = ${thisList.giftList.creatorName}")
         Text("List description = ${thisList.giftList.description}")
 
