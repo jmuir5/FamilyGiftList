@@ -86,3 +86,41 @@ fun SelectableListEntry(giftList: GiftList, state: MutableState<Boolean>, navCon
 
     }
 }
+
+@Composable
+fun UnselectableListEntry(giftList: GiftList, navController: NavHostController){
+    Row(
+        modifier = Modifier.Companion
+            .fillMaxWidth()
+            .padding(4.dp, 2.dp)
+            .background(MaterialTheme.colorScheme.primary)
+            .height(IntrinsicSize.Min)
+            .padding(4.dp),
+    ) {
+        Text(
+            modifier = Modifier.Companion
+                .align(Alignment.Companion.CenterVertically),
+            text = giftList.listName,
+            color = MaterialTheme.colorScheme.onPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Companion.Ellipsis
+        )
+        Spacer(
+            modifier = Modifier.Companion
+                .weight(1f)
+        )
+        IconButton(
+            modifier = Modifier.Companion
+                .align(Alignment.Companion.CenterVertically),
+            onClick = {
+                navController.navigate("${Paths.SingleList.Path}/${giftList.listId}")
+            }) {
+            Image(
+                painter = painterResource(id = R.drawable.open_in_new_24px),
+                contentDescription = "Open Gift",
+                colorFilter = ColorFilter.Companion.tint(MaterialTheme.colorScheme.onPrimary)
+            )
+        }
+
+    }
+}

@@ -1,6 +1,7 @@
 package com.noxapps.familygiftlist.metafetcher
 
 import android.util.Log
+import com.noxapps.familygiftlist.mygifts.normaliseLink
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -75,16 +76,22 @@ class MetaFetcher private constructor(
 
     companion object {
         suspend operator fun invoke(target:String): MetaFetcher? {
-            val doc = if(target.startsWith("https://")||target.startsWith("Https://"))
-                withContext(Dispatchers.IO){
-                    Jsoup.connect(target).userAgent("Mozilla").get()
-                }
-            else
-                withContext(Dispatchers.IO){
-                    Jsoup.connect("https://$target").userAgent("Mozilla").get()
+            val normalisedTarget = target.normaliseLink()
+            try {
+                val doc = withContext(Dispatchers.IO) {
+                    Jsoup.connect(normalisedTarget)
+                        .userAgent("Mozilla")
+                        .timeout(10000)
+                        .get()
                 }
 
-            return MetaFetcher(doc, target)
+                return MetaFetcher(doc, normalisedTarget)
+            }
+            catch (e:Exception){
+                Log.d("metafetcher failed", "target: $target")
+                Log.d("metafetcher failed", "reason: $e")
+                return MetaFetcher(Document(""), "null")
+            }
         }
     }
 }

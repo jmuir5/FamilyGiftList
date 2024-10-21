@@ -96,12 +96,14 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
             route = "${Paths.SingleGift.Path}/{giftId}",
             arguments = listOf(navArgument("giftId") { type = NavType.IntType })
         ) {
-            val listId = it.arguments?.getInt("giftId")
-            if (listId != null) {
+            val giftId = it.arguments?.getInt("giftId")
+            if (giftId != null) {
                 SingleGiftPage(
-                    listId,
-                    db,
-                    navController
+                    giftId,
+                    db = db,
+                    user = currentUser.value,
+                    auth = auth,
+                    navController = navController
                 )
             } else {
                 //todo: error code
