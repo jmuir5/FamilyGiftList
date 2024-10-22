@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">WishingLeaf</string>
+    <string name="list_db_reference">List</string>
+    <string name="gift_db_reference">List</string>
+    <string name="relationship_db_reference">List</string>
 </resources>

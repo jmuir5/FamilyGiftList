@@ -8,8 +8,11 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -20,6 +23,9 @@ class LoginViewModel(
     val db:AppDatabase,
     val navController: NavController
 ):ViewModel() {
+    private val firebaseDB = Firebase.database.reference
+
+
     fun login(
         email:String,
         password:String,
@@ -33,6 +39,17 @@ class LoginViewModel(
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("Login", "signInWithEmail:success")
                     val user = auth.currentUser
+                    firebaseDB
+                        .child(user!!.uid)
+                        .child("Lists")
+                        .get()
+                        .addOnCompleteListener(){
+                            val lists = it.result.getValue(GiftList::class.java)
+                            Log.d("pulled data test", lists.toString())
+                        }
+                        .addOnFailureListener(){
+
+                        }
                     navController.navigate(Paths.Home.Path){
                         popUpTo(Paths.Home.Path) {
                             inclusive=true
