@@ -32,7 +32,7 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
         AppDatabase::class.java, "gift-app-database"
     ).fallbackToDestructiveMigration().build()
     val currentUser = remember { mutableStateOf( sampleData.nullUser ) }
-    LaunchedEffect(coroutineScope) {
+    LaunchedEffect(auth.currentUser) {
         try{
             auth.currentUser?.uid?.let { currentUser.value = db.userDao().getOneById(it) }
         }

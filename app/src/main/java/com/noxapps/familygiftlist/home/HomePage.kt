@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -38,10 +39,15 @@ fun HomePage(
     currentUser: User?,
     navController: NavHostController,
     db:AppDatabase,
-    viewModel: HomeViewModel = HomeViewModel()
+    viewModel: HomeViewModel = HomeViewModel(
+        auth = auth,
+        db = db,
+        user = currentUser,
+        navController = navController
+    )
 ){
     loginCheck(navController, auth)
-    Greeting(currentUser, db,  navController)
+    Greeting(currentUser, db,  navController, viewModel)
 }
 
 
@@ -49,7 +55,8 @@ fun HomePage(
 fun Greeting(
     currentUser: User?,
     db:AppDatabase,
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: HomeViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
     /*val fakeGifts = (1..5).map{
@@ -140,6 +147,13 @@ fun Greeting(
             }
         ) {
             Text("clean database")
+        }
+        Button(
+            onClick = {
+                viewModel.pullData(coroutineScope)
+            }
+        ) {
+            Text("pull lists")
         }
         var relationships by remember {mutableStateOf<List<GiftListGiftCrossReference>>(emptyList())}
         val coroutineScope = rememberCoroutineScope()
