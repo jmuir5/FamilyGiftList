@@ -15,6 +15,7 @@ import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.User
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -30,7 +31,8 @@ class LoginViewModel(
         email:String,
         password:String,
         enableState: MutableState<Boolean>,
-        context: Context
+        context: Context,
+        coroutineScope: CoroutineScope
     ){
         enableState.value = false
         auth.signInWithEmailAndPassword(email, password)
@@ -39,22 +41,84 @@ class LoginViewModel(
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("Login", "signInWithEmail:success")
                     val user = auth.currentUser
-                    firebaseDB
+
+                    Log.d("login debug", "loading data")
+
+                    coroutineScope.launch {
+                        try {
+                            user?.let {
+                                val loadedUser = db.userDao().getOneById(user.uid)
+                                Log.d("login debug", "loaded user $loadedUser")
+                                Log.d("login debug", "loaded user ${loadedUser.userId}")
+
+
+
+                                if ( loadedUser.userId != "") {
+                                    MainScope().launch {
+                                        Log.d("login debug", "load successfull, going to home")
+
+                                        navController.navigate(Paths.Home.Path) {
+                                            popUpTo(Paths.Home.Path) {
+                                                inclusive = true
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    throw Exception("load failed")
+                                }
+                                /*Log.d("login debug", "loaded user = ${db.userDao().getOneById(user.uid)}")
+                            MainScope().launch {
+                                Log.d("login debug", "load successfull, going to home")
+
+                                navController.navigate(Paths.Home.Path){
+                                    popUpTo(Paths.Home.Path) {
+                                        inclusive=true
+                                    }
+                                }
+                            }*/
+                            } ?: throw Exception("load failed")
+                        } catch (e:Exception){
+                            Log.d("login debug", "load failed, pulling data")
+
+                            firebaseDB
+                                .child(user!!.uid)
+                                .child("User")
+                                .get()
+                                .addOnCompleteListener(){pu ->
+                                    Log.d("pulled data test", pu.result.toString())
+                                    val pulledUser = pu.result.getValue(User::class.java)
+                                    Log.d("pulled data test", pulledUser.toString())
+                                    coroutineScope.launch {
+                                        pulledUser?.let {db.userDao().insertOne(it) }
+                                        MainScope().launch {
+                                            navController.navigate(Paths.Home.Path){
+                                                popUpTo(Paths.Home.Path) {
+                                                    inclusive=true
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                .addOnFailureListener(){
+
+                                }
+                        }
+                    }
+
+                    /*firebaseDB
                         .child(user!!.uid)
-                        .child("Lists")
+                        .child("User")
                         .get()
                         .addOnCompleteListener(){
-                            val lists = it.result.getValue(GiftList::class.java)
+                            val lists = it.result.getValue(User::class.java)
                             Log.d("pulled data test", lists.toString())
                         }
                         .addOnFailureListener(){
 
-                        }
-                    navController.navigate(Paths.Home.Path){
-                        popUpTo(Paths.Home.Path) {
-                            inclusive=true
-                        }
-                    }
+                        }*/
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("Login", "signInWithEmail:failure", task.exception)
@@ -87,13 +151,23 @@ class LoginViewModel(
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("register", "createUserWithEmail:success")
                     val user = auth.currentUser
-                    coroutineScope.launch{
-                        user?.let{db.userDao().insertOne(User(it.uid, email, firstName, lastName, birthday))}
-                    }
-                    navController.navigate(Paths.Home.Path) {
-                        popUpTo(Paths.Home.Path) {
-                            inclusive = true
+                    user?.let {
+                        val newUser =  User(it.uid, email, firstName, lastName, birthday.toString())
+                        coroutineScope.launch{
+                            db.userDao().insertOne(newUser)
+                            firebaseDB
+                                .child(user.uid)
+                                .child("User")
+                                .setValue(newUser)
+                            MainScope().launch {
+                                navController.navigate(Paths.Home.Path) {
+                                    popUpTo(Paths.Home.Path) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
                         }
+
                     }
                 } else {
                     // If sign in fails, display a message to the user.

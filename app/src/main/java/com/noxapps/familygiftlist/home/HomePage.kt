@@ -29,6 +29,8 @@ import com.noxapps.familygiftlist.data.User
 import com.noxapps.familygiftlist.data.sampleData
 import com.noxapps.familygiftlist.navigation.loginCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomePage(
@@ -49,6 +51,7 @@ fun Greeting(
     db:AppDatabase,
     navController: NavHostController
 ) {
+    val coroutineScope = rememberCoroutineScope()
     /*val fakeGifts = (1..5).map{
             Gift(
             0,
@@ -133,7 +136,7 @@ fun Greeting(
         }
         Button(
             onClick = {
-                //db.clearAllTables()
+                    //db.clearAllTables()
             }
         ) {
             Text("clean database")

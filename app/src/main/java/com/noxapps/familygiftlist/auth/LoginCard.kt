@@ -24,6 +24,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +52,7 @@ fun LoginCard(
     viewModel: LoginViewModel
 ){
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var enabled = remember { mutableStateOf(true) }
@@ -199,7 +201,8 @@ fun LoginCard(
                                 email,
                                 password,
                                 enabled,
-                                context
+                                context,
+                                coroutineScope
                             )
                         }
                     }
@@ -222,7 +225,8 @@ fun LoginCard(
                         email,
                         password,
                         enabled,
-                        context
+                        context,
+                        coroutineScope
                     )
                 }
             }

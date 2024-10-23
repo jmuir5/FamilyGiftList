@@ -1,6 +1,9 @@
 package com.noxapps.familygiftlist.data
 
 import java.time.LocalDate
+import java.time.Instant
+import java.util.Date
+
 
 class sampleData {
     val previewGift = Gift(
@@ -11,10 +14,10 @@ class sampleData {
         "www.google.com",
         5000,
         true,
-        LocalDate.of(2024, 9, 10),
+        LocalDate.of(2024, 9, 10).toString(),
         "Joey Bonzo",
         false,
-        LocalDate.now(),
+        LocalDate.now().toString(),
         "Joey Bonzo",
         "",
 
@@ -40,10 +43,10 @@ class sampleData {
             "www.google.com",
             5000,
             true,
-            LocalDate.of(2024, 9, 10),
+            LocalDate.of(2024, 9, 10).toString(),
             "Joey Bonzo",
             false,
-            LocalDate.now(),
+            LocalDate.now().toString(),
             "Joey Bonzo",
             "",
 
@@ -60,7 +63,7 @@ class sampleData {
             "example@gmail.com",
             "Example",
             "User",
-            LocalDate.now()
+            LocalDate.now().toString()
         )
 
         val sampleListOfGifts = (0..10).map{sampleGift}
@@ -74,7 +77,7 @@ class sampleData {
             "null email",
             "Null",
             "User",
-            LocalDate.now()
+            LocalDate.now().toString()
         )
 
         val nullList = GiftList(
@@ -93,10 +96,10 @@ class sampleData {
             "",
             0,
             false,
-            LocalDate.now(),
+            LocalDate.now().toString(),
             "",
             false,
-            LocalDate.now(),
+            LocalDate.now().toString(),
             "",
             ""
             )

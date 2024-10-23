@@ -58,7 +58,7 @@ fun ReceivedGiftCard(
 
     val formatter = DateTimeFormatter.ofPattern("dd/MM")
     val reservedText = "Reserved by ${gift.reservedBy} on ${formatter.format(gift.reservedDate)},"
-    val purchasedText = "Purchased by ${gift.purchasedBy} on ${formatter.format(gift.purchaseDate)},"
+    val purchasedText = "Purchased by ${gift.purchasedBy} on ${formatter.format(gift.purchasedDate)},"
 
     var cardHeightPx by remember{ mutableFloatStateOf(0f) }
 
@@ -184,7 +184,7 @@ fun ReceivedGiftCard(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        text = "${gift.purchaseDate.until(LocalDate.now(), ChronoUnit.DAYS)} Days ago",
+                        text = "${gift.purchasedDate.until(LocalDate.now(), ChronoUnit.DAYS)} Days ago",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.End
@@ -252,10 +252,10 @@ fun giftCardPreview() {
             "www.google.com",
             5000,
             true,
-            LocalDate.of(2024, 9, 10),
+            LocalDate.of(2024, 9, 10).toString(),
             "Joey Bonzo",
             false,
-            LocalDate.now(),
+            LocalDate.now().toString(),
             "Joey Bonzo",
             "",
 

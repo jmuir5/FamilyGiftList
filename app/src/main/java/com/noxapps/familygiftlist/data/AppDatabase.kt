@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [Gift::class, GiftList::class, User::class, GiftListGiftCrossReference::class], version = 3)
+@Database(entities = [Gift::class, GiftList::class, User::class, GiftListGiftCrossReference::class], version = 5)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun giftDao(): GiftDao
