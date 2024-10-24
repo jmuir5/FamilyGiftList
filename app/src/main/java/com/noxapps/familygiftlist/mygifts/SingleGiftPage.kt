@@ -279,7 +279,7 @@ fun DeleteDialogue(dialogueState:MutableState<Boolean>, onConfirm: ()-> Unit){
     Dialog(
         onDismissRequest = {dialogueState.value = !dialogueState.value},
     ){
-        Card {
+        Box(){
 
         }
     }
