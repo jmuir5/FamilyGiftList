@@ -9,9 +9,9 @@ import java.util.Date
 
 @Entity
 data class Gift(
-    @PrimaryKey(autoGenerate = true)val giftId: Int,
+    @PrimaryKey(autoGenerate = true)val giftId: Int = 0,
     var creatorId: String = "",
-    var name: String ="",
+    var name: String = "",
     var description: String = "",
     var link:String = "",
     var price: Int = 0,

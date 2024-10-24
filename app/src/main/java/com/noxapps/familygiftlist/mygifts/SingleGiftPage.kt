@@ -275,7 +275,7 @@ fun SingleGiftPage(
 }
 
 @Composable
-fun DeleteDialogue(dialogueState:MutableState<Boolean>, gift: GiftWithLists, viewModel: SingleGiftViewModel){
+fun DeleteDialogue(dialogueState:MutableState<Boolean>, onConfirm: ()-> Unit){
     Dialog(
         onDismissRequest = {dialogueState.value = !dialogueState.value},
     ){

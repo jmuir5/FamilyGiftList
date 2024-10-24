@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 
 @Dao
 interface ReferenceDao {
@@ -14,6 +15,9 @@ interface ReferenceDao {
 
     @Insert
     suspend fun insert(reference: GiftListGiftCrossReference)
+
+    @Upsert
+    suspend fun upsert(reference: GiftListGiftCrossReference)
 
     @Update
     suspend fun update(vararg references:GiftListGiftCrossReference)

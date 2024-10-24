@@ -5,11 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class GiftList(
-    @PrimaryKey(autoGenerate = true) val listId:Int,
-    val creatorId: String,
-    val creatorName: String,
-    var listName: String,
-    var description:String
+    @PrimaryKey(autoGenerate = true) val listId:Int = 0,
+    val creatorId: String = "",
+    val creatorName: String = "",
+    var listName: String = "",
+    var description:String = ""
 ) {
     constructor(oldList:GiftList, newId:Int) : this(
         listId=newId,

@@ -4,11 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.values
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
+import com.noxapps.familygiftlist.data.GiftListGiftCrossReference
 import com.noxapps.familygiftlist.data.User
 import com.noxapps.familygiftlist.navigation.Paths
 import kotlinx.coroutines.CoroutineScope
@@ -26,23 +30,9 @@ class HomeViewModel(
     private val firebaseDB = Firebase.database.reference
 
     fun pullData(coroutineScope: CoroutineScope){
-        if(user!=null) {
-            coroutineScope.launch {
-                val lists = firebaseDB
-                    .child(user.userId)
-                    .child("Lists")
-                    .values<GiftList>()
-                    .toList()
-                MainScope().launch {
-                    lists.forEach {
-                        Log.d("pulled lists", it.toString())
-                    }
-                }
-            }
-
-
-
-        }
+        updateLists(coroutineScope)
+        updateGifts(coroutineScope)
+        updateRelationships(coroutineScope)
         //user?.userId?.let {
 
                 //.get()
@@ -65,6 +55,70 @@ class HomeViewModel(
 
 
 
+    }
+    private fun updateLists(coroutineScope: CoroutineScope){
+        if(user!=null) {
+            firebaseDB
+                .child(user.userId)
+                .child("Lists")
+                .get()
+                .addOnCompleteListener() { snapshot ->
+                    for (element in snapshot.result.children) {
+                        val pulledList = element.getValue(GiftList::class.java)
+                        pulledList?.let {
+                            coroutineScope.launch {
+                                db.giftListDao().upsert(it)
+                            }
+                        }
+
+                    }
+
+                }
+        }
+    }
+    private fun updateGifts(coroutineScope: CoroutineScope){
+        if(user!=null) {
+            firebaseDB
+                .child(user.userId)
+                .child("Gifts")
+                .get()
+                .addOnCompleteListener() { snapshot ->
+                    for (element in snapshot.result.children) {
+                        val pulledGift = element.getValue(Gift::class.java)
+                        pulledGift?.let {
+                            coroutineScope.launch {
+                                db.giftDao().upsert(it)
+                            }
+                        }
+
+                    }
+
+                }
+        }
+    }
+    private fun updateRelationships(coroutineScope: CoroutineScope){
+        if(user!=null) {
+            firebaseDB
+                .child(user.userId)
+                .child("Relationships")
+                .get()
+                .addOnCompleteListener() { snapshot ->
+                    for (list in snapshot.result.children) {
+                        val listId = list.key?.toInt()?:0
+                        for(entry in list.children){
+                            val result = entry.getValue(Boolean::class.java)
+                            result?.let {
+                                if (it) {
+                                    val giftId = entry.key?.toInt()?:0
+                                    coroutineScope.launch {
+                                        db.referenceDao().upsert(GiftListGiftCrossReference(listId, giftId))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        }
     }
 
 }

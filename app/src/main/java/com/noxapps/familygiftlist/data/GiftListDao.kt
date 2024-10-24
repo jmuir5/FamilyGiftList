@@ -3,9 +3,11 @@ package com.noxapps.familygiftlist.data
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,6 +17,9 @@ interface GiftListDao {
 
     @Insert
     suspend fun insert(giftList:GiftList):Long
+
+    @Upsert
+    suspend fun upsert(giftList:GiftList):Long
 
     @Update
     suspend fun update(vararg giftLists:GiftList)

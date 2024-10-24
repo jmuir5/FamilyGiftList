@@ -46,7 +46,11 @@ fun HomePage(
         navController = navController
     )
 ){
-    loginCheck(navController, auth)
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        viewModel.pullData(coroutineScope)
+        loginCheck(navController, auth)
+    }
     Greeting(currentUser, db,  navController, viewModel)
 }
 

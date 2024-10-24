@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 
 @Dao
 interface GiftDao {
@@ -14,6 +15,9 @@ interface GiftDao {
 
     @Insert
     suspend fun insert(gift:Gift):Long
+
+    @Upsert
+    suspend fun upsert(gift:Gift):Long
 
     @Update
     suspend fun update(vararg gifts:Gift)
