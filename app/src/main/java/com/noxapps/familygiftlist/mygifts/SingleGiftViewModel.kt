@@ -11,6 +11,7 @@ import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftListGiftCrossReference
+import com.noxapps.familygiftlist.data.GiftWithLists
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -99,6 +100,42 @@ class SingleGiftViewModel(
 
      }
 
+     fun deleteGift(
+          //enabledState: MutableState<Boolean>,
+          //drawerState: BottomDrawerState,
+          giftObject: GiftWithLists,
+          navController:NavHostController,
+          coroutineScope: CoroutineScope
+     ){
+          firebaseDB.child("Gifts").child(giftObject.gift.giftId.toString()).removeValue()
+
+          giftObject.lists.forEach{ list ->
+               firebaseDB.child("Relationships")
+                    .child(list.listId.toString())
+                    .child("${giftObject.gift.giftId}")
+                    .setValue(false)
+          }
+          coroutineScope.launch {
+
+
+               db.giftDao().delete(giftObject.gift)
+               val references = db.referenceDao().getByGiftId(giftObject.gift.giftId)
+               references.forEach{ it ->
+                    db.referenceDao().delete(it)
+               }
+               MainScope().launch {
+                    navController.popBackStack()
+               }
+
+          }
+          //local database
+          //gift
+          //relationships
+
+          //firebase
+          //gift
+          //relationships
+     }
     //val metadata = MetaFetcher()
     /*companion object {
         suspend operator fun invoke(id:Int,

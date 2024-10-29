@@ -543,7 +543,7 @@ fun ColumnScope.EditGiftDialogue(
                             state.close()
                         }
                     }
-                    .padding(10.dp)
+                    //.padding(10.dp)
             ){
                 Text(
                     modifier = Modifier.Companion
@@ -611,7 +611,7 @@ fun ColumnScope.EditGiftDialogue(
                             )
                         }
                     }
-                    .padding(10.dp)
+                    //.padding(10.dp)
             ){
                 Text(
                     modifier = Modifier.Companion

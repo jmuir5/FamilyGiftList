@@ -22,8 +22,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.BottomDrawer
 import androidx.compose.material.BottomDrawerValue
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material.rememberBottomDrawerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -51,6 +51,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.Dp.Companion.Hairline
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -59,6 +60,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.noxapps.familygiftlist.Indicator
 import com.noxapps.familygiftlist.R
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftWithLists
 import com.noxapps.familygiftlist.data.User
 import com.noxapps.familygiftlist.data.sampleData
@@ -103,6 +105,8 @@ fun SingleGiftPage(
     var pageSize by remember{mutableIntStateOf(0)}
 
     val reloader = remember{mutableStateOf(true)}
+
+    val deleteDialogueState = remember{mutableStateOf(false)}
 
 
 
@@ -172,9 +176,6 @@ fun SingleGiftPage(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
-
-            //MetadataPlaceholderCard()
-
             if (metadata != null) {
                 MetadataCard(metadata!!)
 
@@ -230,7 +231,7 @@ fun SingleGiftPage(
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.error)
                         .clickable{
-                            //todo bring up delete dialogue
+                            deleteDialogueState.value = true
                         }
                         .padding(10.dp)
                 ){
@@ -271,17 +272,99 @@ fun SingleGiftPage(
             }
 
         }
+        if(deleteDialogueState.value){
+            DeleteDialogue(deleteDialogueState) {
+                viewModel.deleteGift(
+                    giftObject = thisGift,
+                    navController = navController,
+                    coroutineScope = coroutineScope
+                )
+            }
+        }
     }
 }
 
 @Composable
 fun DeleteDialogue(dialogueState:MutableState<Boolean>, onConfirm: ()-> Unit){
+    BackHandler {
+        dialogueState.value = !dialogueState.value
+    }
     Dialog(
         onDismissRequest = {dialogueState.value = !dialogueState.value},
     ){
-        Box(){
+        //Box(
+          //  modifier = Modifier
 
-        }
+        //){
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .border(Hairline, MaterialTheme.colorScheme.outline)
+            ){
+                Row(
+                    modifier = Modifier.Companion
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min)
+                    ,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.primary)
+                        //.padding(10.dp)
+                    ){
+                        Text(
+                            modifier = Modifier.Companion
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                                .align(Alignment.Companion.CenterVertically),
+                            text = "Confirmation",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            //textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                Text(
+                    modifier = Modifier
+                        .padding(8.dp),
+                    text = "Are you sure you want to delete this gift? It will be removed from all lists including ones shared in groups." +
+                            "\n\nThis can not be undone.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+                Row(
+                    modifier = Modifier.Companion
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min)
+                    ,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.error)
+                            .clickable {
+                                onConfirm()
+                            }
+                        //.padding(10.dp)
+                    ){
+                        Text(
+                            modifier = Modifier.Companion
+                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .align(Alignment.Companion.CenterVertically),
+                            text = "Delete Gift",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+       // }
     }
 }
 
