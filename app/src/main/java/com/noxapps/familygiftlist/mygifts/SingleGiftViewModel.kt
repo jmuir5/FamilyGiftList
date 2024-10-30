@@ -107,27 +107,41 @@ class SingleGiftViewModel(
           navController:NavHostController,
           coroutineScope: CoroutineScope
      ){
-          firebaseDB.child("Gifts").child(giftObject.gift.giftId.toString()).removeValue()
-
-          giftObject.lists.forEach{ list ->
-               firebaseDB.child("Relationships")
-                    .child(list.listId.toString())
-                    .child("${giftObject.gift.giftId}")
-                    .setValue(false)
-          }
-          coroutineScope.launch {
-
-
-               db.giftDao().delete(giftObject.gift)
-               val references = db.referenceDao().getByGiftId(giftObject.gift.giftId)
-               references.forEach{ it ->
-                    db.referenceDao().delete(it)
+          auth.uid?.let {
+               firebaseDB.child(it).child("Gifts").child(giftObject.gift.giftId.toString()).removeValue()
+                    .addOnSuccessListener {
+                         Log.d("gift Deletion","gift deleted")
+                    }
+                    .addOnFailureListener{
+                         Log.d("gift Deletion","gift deleted")
+                    }
+               giftObject.lists.forEach{ list ->
+                    firebaseDB.child(it).child("Relationships")
+                         .child(list.listId.toString())
+                         .child("${giftObject.gift.giftId}")
+                         .setValue(false)
+                         .addOnSuccessListener {
+                              Log.d("gift Deletion","relationship ${list.listId} - ${giftObject.gift.giftId} deleted")
+                         }
+                         .addOnFailureListener{
+                              Log.d("gift Deletion","gift deleted")
+                         }
                }
-               MainScope().launch {
-                    navController.popBackStack()
+               coroutineScope.launch {
+                    db.giftDao().delete(giftObject.gift)
+                    val references = db.referenceDao().getByGiftId(giftObject.gift.giftId)
+                    references.forEach{ it ->
+                         db.referenceDao().delete(it)
+                    }
+                    MainScope().launch {
+                         navController.popBackStack()
+                    }
                }
 
           }
+
+
+
           //local database
           //gift
           //relationships

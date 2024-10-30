@@ -65,7 +65,8 @@ import java.time.LocalDate
 fun ColumnScope.CreateGiftDialogue(
     state: BottomDrawerState,
     scope: CoroutineScope,
-    headerSize: MutableState<IntSize>,
+    //headerSize: MutableState<IntSize>,
+    drawerSize: Int,
     user: User,
     db: AppDatabase,
     navController: NavHostController,
@@ -96,167 +97,177 @@ fun ColumnScope.CreateGiftDialogue(
 
     LaunchedEffect(coroutineScope) {
         listOfLists = db.userDao()
-            .getOneWithListsById(user.userId).lists//giftListDao().getAll() //todo make only this user
+            .getOneWithListsById(user.userId).lists
+
         (0..listOfLists.size).map { selectedLists.add(mutableStateOf(false)) }
     }
     LaunchedEffect(state.currentValue) {
         if(!state.isClosed)state.expand()
     }
 
-    Row(
-        modifier = Modifier.Companion
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
-            .padding(12.dp, 2.dp)
-            .height(IntrinsicSize.Min),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            modifier = Modifier.Companion
-                .padding(4.dp)
-                .align(Alignment.Companion.CenterVertically),
-            text = "Create new gift",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
-        IconButton(
-            onClick = {
-                scope.launch {
-                    state.close()
-                }
-            }
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.close_24px),
-                contentDescription = "close",
-                colorFilter = ColorFilter.Companion.tint(MaterialTheme.colorScheme.onPrimary)
-            )
-        }
-    }
-
     Column(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .height((screenHeight - (headerSize.value.height - 8)).dp)//(screenHeight-((headerSize.value.height+drawerHeaderSize.height)/2)).dp
-            .padding(4.dp)
-
+            .height(with(LocalDensity.current){drawerSize.toDp() })
     ) {
-
-        TextField(
+        Row(
             modifier = Modifier.Companion
-                .fillMaxWidth(),
-            value = giftName,
-            onValueChange = {
-                if (it.length <= 32) {
-                    giftName = it
-                }
-            },
-            colors = textFieldColors,
-            enabled = enabled.value,
-            shape = RectangleShape,
-            label = {
-                if (giftNameError)
-                    Text("Name can not be empty")
-                else
-                    Text("Gift Name")
-            },
-            singleLine = true,
-
-            leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.add_24px),
-                    contentDescription = "List Name",
-                    colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
-                )
-            }
-        )
-        TextField(
-            modifier = Modifier.Companion
-                .fillMaxWidth(),
-            value = giftDesc,
-            onValueChange = {
-                giftDesc = it
-
-            },
-            colors = textFieldColors,
-            enabled = enabled.value,
-            shape = RectangleShape,
-            label = { Text("Description") },
-            singleLine = true,
-
-            leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.add_24px),
-                    contentDescription = "Gift Description",
-                    colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
-                )
-            }
-        )
-        TextField(
-            modifier = Modifier.Companion
-                .fillMaxWidth(),
-            value = giftLink,
-            onValueChange = {
-                giftLink = it
-            },
-            colors = textFieldColors,
-            enabled = enabled.value,
-            shape = RectangleShape,
-            label = { Text("Link") },
-            singleLine = true,
-
-            leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.link_24px),
-                    contentDescription = "Gift Link",
-                    colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
-                )
-            }
-        )
-        TextField(
-            modifier = Modifier.Companion
-                .fillMaxWidth(),
-            value = "\$%.2f".format(giftPrice.toFloat().div(100)),
-            onValueChange = {
-                val cleanedString = it.replace("$", "").replace(".", "")
-                if (cleanedString.isEmpty() || cleanedString.isDigitsOnly()) {
-                    giftPrice = try {
-                        cleanedString.toInt()
-                    } catch (e: Exception) {
-                        Int.MAX_VALUE
-
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(12.dp, 2.dp)
+                .height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                modifier = Modifier.Companion
+                    .padding(4.dp)
+                    .align(Alignment.Companion.CenterVertically),
+                text = "Create new gift",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        state.close()
                     }
                 }
-            },
-            singleLine = true,
-            colors = textFieldColors,
-            enabled = enabled.value,
-            shape = RectangleShape,
-            label = { Text("Price") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Companion.NumberPassword),
-            leadingIcon = {
+            ) {
                 Image(
-                    painter = painterResource(id = R.drawable.attach_money_24px),
-                    contentDescription = "Gift Price",
-                    colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
+                    painter = painterResource(id = R.drawable.close_24px),
+                    contentDescription = "close",
+                    colorFilter = ColorFilter.Companion.tint(MaterialTheme.colorScheme.onPrimary)
                 )
             }
-        )
-        Text("Add this gift to lists:")
-        LazyColumn(
+        }
+
+        Column(
             modifier = Modifier.Companion
-                .border(2.dp, MaterialTheme.colorScheme.primary)
-                .weight(1f)
-                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+                //.height((screenHeight - (headerSize.value.height - 8)).dp)//(screenHeight-((headerSize.value.height+drawerHeaderSize.height)/2)).dp
                 .padding(4.dp)
+                .weight(1f)
+
+
         ) {
-            itemsIndexed(listOfLists) { index, gift ->
-                SelectableListEntry(
-                    giftList = gift,
-                    state = selectedLists[index],
-                    navController = navController
-                )
+
+            TextField(
+                modifier = Modifier.Companion
+                    .fillMaxWidth(),
+                value = giftName,
+                onValueChange = {
+                    if (it.length <= 32) {
+                        giftName = it
+                    }
+                },
+                colors = textFieldColors,
+                enabled = enabled.value,
+                shape = RectangleShape,
+                label = {
+                    if (giftNameError)
+                        Text("Name can not be empty")
+                    else
+                        Text("Gift Name")
+                },
+                singleLine = true,
+
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.add_24px),
+                        contentDescription = "List Name",
+                        colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
+                    )
+                }
+            )
+            TextField(
+                modifier = Modifier.Companion
+                    .fillMaxWidth(),
+                value = giftDesc,
+                onValueChange = {
+                    giftDesc = it
+
+                },
+                colors = textFieldColors,
+                enabled = enabled.value,
+                shape = RectangleShape,
+                label = { Text("Description") },
+                singleLine = true,
+
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.add_24px),
+                        contentDescription = "Gift Description",
+                        colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
+                    )
+                }
+            )
+            TextField(
+                modifier = Modifier.Companion
+                    .fillMaxWidth(),
+                value = giftLink,
+                onValueChange = {
+                    giftLink = it
+                },
+                colors = textFieldColors,
+                enabled = enabled.value,
+                shape = RectangleShape,
+                label = { Text("Link") },
+                singleLine = true,
+
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.link_24px),
+                        contentDescription = "Gift Link",
+                        colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
+                    )
+                }
+            )
+            TextField(
+                modifier = Modifier.Companion
+                    .fillMaxWidth(),
+                value = "\$%.2f".format(giftPrice.toFloat().div(100)),
+                onValueChange = {
+                    val cleanedString = it.replace("$", "").replace(".", "")
+                    if (cleanedString.isEmpty() || cleanedString.isDigitsOnly()) {
+                        giftPrice = try {
+                            cleanedString.toInt()
+                        } catch (e: Exception) {
+                            Int.MAX_VALUE
+
+                        }
+                    }
+                },
+                singleLine = true,
+                colors = textFieldColors,
+                enabled = enabled.value,
+                shape = RectangleShape,
+                label = { Text("Price") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Companion.NumberPassword),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.attach_money_24px),
+                        contentDescription = "Gift Price",
+                        colorFilter = textIconColors.let { ColorFilter.Companion.tint(it) }
+                    )
+                }
+            )
+            Text("Add this gift to lists:")
+            LazyColumn(
+                modifier = Modifier.Companion
+                    .border(2.dp, MaterialTheme.colorScheme.primary)
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            ) {
+                itemsIndexed(listOfLists) { index, gift ->
+                    SelectableListEntry(
+                        giftList = gift,
+                        state = selectedLists[index],
+                        navController = navController
+                    )
+                }
             }
+
         }
         Button(
             modifier = Modifier.Companion
@@ -307,6 +318,7 @@ fun ColumnScope.CreateGiftDialogue(
         }
     }
 }
+
 
 @Composable
 fun ColumnScope.EditGiftDialogue(

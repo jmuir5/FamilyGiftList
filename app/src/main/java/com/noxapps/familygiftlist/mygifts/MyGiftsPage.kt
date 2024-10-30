@@ -59,7 +59,8 @@ fun MyGiftsPage(
 
     val expandedListCard = remember{mutableStateOf(-1)}
 
-    val headerSize = remember{ mutableStateOf(IntSize.Zero) }
+    val headerSize = remember{ mutableIntStateOf(0) }
+    val pageSize = remember{ mutableIntStateOf(0) }
 
 
     LaunchedEffect(coroutineScope) {
@@ -87,7 +88,7 @@ fun MyGiftsPage(
             if(showCreateDrawer){
                 CreateGiftDialogue(
                     state = createDrawerState,
-                    headerSize = headerSize,
+                    drawerSize = pageSize.intValue - headerSize.intValue,
                     scope = coroutineScope,
                     user = user,
                     navController = navController,
@@ -101,6 +102,7 @@ fun MyGiftsPage(
             coroutineScope = coroutineScope,
             drawerState = createDrawerState,
             headerSize = headerSize,
+            pageSize = pageSize,
             listOfGifts = listOfGifts,
             expandedCardIndex = expandedListCard,
             navController = navController
@@ -131,7 +133,7 @@ fun CreateGiftPreview() {
             val viewModel = MyGiftsViewModel(db, auth)
             val headerSize = remember{mutableStateOf(IntSize.Zero)}
 
-            CreateGiftDialogue(
+            /*CreateGiftDialogue(
                 state = state,
                 headerSize = headerSize,
                 scope = coroutineScope,
@@ -139,7 +141,7 @@ fun CreateGiftPreview() {
                 db = db,
                 navController=navController,
                 viewModel=viewModel
-            )
+            )*/
         }
 
     }

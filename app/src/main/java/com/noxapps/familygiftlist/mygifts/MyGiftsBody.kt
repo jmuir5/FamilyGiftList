@@ -37,7 +37,9 @@ import kotlinx.coroutines.launch
 fun MyGiftsBody(
     listOfGifts: List<GiftWithLists>,
     expandedCardIndex: MutableState<Int>,
-    headerSize: MutableState<IntSize>,
+
+    headerSize: MutableState<Int>,
+    pageSize:MutableState<Int>,
     coroutineScope: CoroutineScope,
     drawerState: BottomDrawerState,
     navController: NavHostController
@@ -46,16 +48,20 @@ fun MyGiftsBody(
     Column(
         modifier = Modifier.Companion
             .fillMaxSize()
+            .onGloballyPositioned { coordinates ->
+                pageSize.value = coordinates.size.height
+            }
     ) {
         Row(
-            modifier = Modifier.Companion
+            modifier = Modifier
                 .fillMaxWidth()
+                .onGloballyPositioned { coordinates ->
+                    headerSize.value = coordinates.size.height
+                }
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
                 .height(IntrinsicSize.Min)
-                .onGloballyPositioned { coordinates ->
-                    headerSize.value = coordinates.size
-                },
+                ,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
