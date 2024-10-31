@@ -37,6 +37,7 @@ import androidx.navigation.NavHostController
 import com.noxapps.familygiftlist.R
 import com.noxapps.familygiftlist.data.GiftWithLists
 import com.noxapps.familygiftlist.metafetcher.MetaFetcher
+import com.noxapps.familygiftlist.mygifts.singlegift.RemoteGiftImage
 import com.noxapps.familygiftlist.navigation.Paths
 
 

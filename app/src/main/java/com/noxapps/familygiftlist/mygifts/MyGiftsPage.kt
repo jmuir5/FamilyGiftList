@@ -33,11 +33,6 @@ import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.GiftWithLists
 import com.noxapps.familygiftlist.data.User
 import com.noxapps.familygiftlist.data.sampleData
-import com.noxapps.familygiftlist.mylists.CreateListDialogue
-import com.noxapps.familygiftlist.mylists.ListCard
-import com.noxapps.familygiftlist.mylists.MyListsBody
-import com.noxapps.familygiftlist.mylists.MyListsViewModel
-import com.noxapps.familygiftlist.mylists.SelectableGiftEntry
 import com.noxapps.familygiftlist.navigation.loginCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 import kotlinx.coroutines.launch
@@ -88,11 +83,11 @@ fun MyGiftsPage(
             if(showCreateDrawer){
                 CreateGiftDialogue(
                     state = createDrawerState,
-                    drawerSize = pageSize.intValue - headerSize.intValue,
                     scope = coroutineScope,
+                    drawerSize = pageSize.intValue - headerSize.intValue,
                     user = user,
-                    navController = navController,
                     db = db,
+                    navController = navController,
                     viewModel = viewModel
                 )
             }

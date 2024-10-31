@@ -1,4 +1,4 @@
-package com.noxapps.familygiftlist.mygifts
+package com.noxapps.familygiftlist.mygifts.singlegift
 
 import android.util.Log
 import androidx.compose.material.BottomDrawerState

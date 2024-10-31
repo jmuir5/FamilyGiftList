@@ -7,7 +7,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -47,7 +45,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavHostController
@@ -57,12 +54,13 @@ import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.GiftWithLists
 import com.noxapps.familygiftlist.data.User
+import com.noxapps.familygiftlist.mygifts.singlegift.SingleGiftViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
-fun ColumnScope.CreateGiftDialogue(
+fun CreateGiftDialogue(
     state: BottomDrawerState,
     scope: CoroutineScope,
     //headerSize: MutableState<IntSize>,
@@ -99,7 +97,7 @@ fun ColumnScope.CreateGiftDialogue(
         listOfLists = db.userDao()
             .getOneWithListsById(user.userId).lists
 
-        (0..listOfLists.size).map { selectedLists.add(mutableStateOf(false)) }
+        listOfLists.indices.map { selectedLists.add(mutableStateOf(false)) }
     }
     LaunchedEffect(state.currentValue) {
         if(!state.isClosed)state.expand()
@@ -121,7 +119,7 @@ fun ColumnScope.CreateGiftDialogue(
             Text(
                 modifier = Modifier.Companion
                     .padding(4.dp)
-                    .align(Alignment.Companion.CenterVertically),
+                    .align(Alignment.CenterVertically),
                 text = "Create new gift",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -144,13 +142,9 @@ fun ColumnScope.CreateGiftDialogue(
         Column(
             modifier = Modifier.Companion
                 .background(MaterialTheme.colorScheme.background)
-                //.height((screenHeight - (headerSize.value.height - 8)).dp)//(screenHeight-((headerSize.value.height+drawerHeaderSize.height)/2)).dp
                 .padding(4.dp)
                 .weight(1f)
-
-
         ) {
-
             TextField(
                 modifier = Modifier.Companion
                     .fillMaxWidth(),
@@ -321,7 +315,7 @@ fun ColumnScope.CreateGiftDialogue(
 
 
 @Composable
-fun ColumnScope.EditGiftDialogue(
+fun EditGiftDialogue(
     state: BottomDrawerState,
     reloader: MutableState<Boolean>,
     scope: CoroutineScope,
@@ -361,12 +355,11 @@ fun ColumnScope.EditGiftDialogue(
     var listOfLists by remember { mutableStateOf<List<GiftList>>(emptyList()) }
     val selectedLists = remember { mutableStateListOf<MutableState<Boolean>>() }
     val coroutineScope = rememberCoroutineScope()
-    val screenHeight = LocalConfiguration.current.screenHeightDp
 
     LaunchedEffect(coroutineScope) {
         listOfLists = db.userDao()
             .getOneWithListsById(user.userId).lists
-        (0..listOfLists.size-1).map { selectedLists.add(mutableStateOf(initialGift.lists.contains(listOfLists[it]))) }
+        listOfLists.indices.map { selectedLists.add(mutableStateOf(initialGift.lists.contains(listOfLists[it]))) }
     }
     LaunchedEffect(state.currentValue) {
         if(!state.isClosed)state.expand()
@@ -377,7 +370,7 @@ fun ColumnScope.EditGiftDialogue(
     Column(
         modifier = Modifier.Companion
             .background(MaterialTheme.colorScheme.background)
-            .height(with(LocalDensity.current){drawerSize.toDp() })//(screenHeight - (headerSize.value.height - 8)).dp)//(screenHeight-((headerSize.value.height+drawerHeaderSize.height)/2)).dp
+            .height(with(LocalDensity.current){drawerSize.toDp() })
     ) {
         Row(
             modifier = Modifier.Companion

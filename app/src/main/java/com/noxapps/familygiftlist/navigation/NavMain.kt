@@ -19,9 +19,9 @@ import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.sampleData
 import com.noxapps.familygiftlist.home.HomePage
 import com.noxapps.familygiftlist.mygifts.MyGiftsPage
-import com.noxapps.familygiftlist.mygifts.SingleGiftPage
+import com.noxapps.familygiftlist.mygifts.singlegift.SingleGiftPage
 import com.noxapps.familygiftlist.mylists.MyListsPage
-import com.noxapps.familygiftlist.mylists.SingleListPage
+import com.noxapps.familygiftlist.mylists.singlelist.SingleListPage
 
 @Composable
 fun NavMain(navController: NavHostController, auth: FirebaseAuth){
