@@ -93,7 +93,7 @@ fun SingleGiftBody(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            Text("this gift is on the following lists:")
+            Text("This gift is on the following lists:")
             LazyColumn(
                 modifier = Modifier.Companion
                     .border(2.dp, MaterialTheme.colorScheme.primary)
@@ -101,9 +101,9 @@ fun SingleGiftBody(
                     .fillMaxWidth()
                     .padding(4.dp)
             ) {
-                itemsIndexed(thisGift.lists) { index, gift ->
+                itemsIndexed(thisGift.lists) { index, list ->
                     UnselectableListEntry(
-                        giftList = gift,
+                        giftList = list,
                         navController = navController
                     )
                 }

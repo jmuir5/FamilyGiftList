@@ -83,9 +83,11 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
             val listId = it.arguments?.getInt("listId")
             if (listId != null) {
                 SingleListPage(
-                    listId,
-                    db,
-                    navController
+                    id = listId,
+                    db = db,
+                    user = currentUser.value,
+                    auth = auth,
+                    navController = navController
                 )
             } else {
                 //todo: error code

@@ -37,7 +37,6 @@ import kotlinx.coroutines.launch
 fun MyGiftsBody(
     listOfGifts: List<GiftWithLists>,
     expandedCardIndex: MutableState<Int>,
-
     headerSize: MutableState<Int>,
     pageSize:MutableState<Int>,
     coroutineScope: CoroutineScope,
@@ -60,8 +59,7 @@ fun MyGiftsBody(
                 }
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
-                .height(IntrinsicSize.Min)
-                ,
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(

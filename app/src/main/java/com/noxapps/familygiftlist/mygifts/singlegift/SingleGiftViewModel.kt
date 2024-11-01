@@ -32,7 +32,6 @@ class SingleGiftViewModel(
           giftObject: Gift,
           newRelationships:List<Int>,
           removedRelationships:List<Int>,
-          navController:NavHostController,
           coroutineScope: CoroutineScope
      ){
           enabledState.value = false

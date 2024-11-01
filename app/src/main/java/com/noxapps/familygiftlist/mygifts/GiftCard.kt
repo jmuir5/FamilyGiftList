@@ -87,7 +87,7 @@ fun GiftCard(
     ) {
         Box(
             modifier = Modifier
-                .weight(2f)
+                .weight(1f)
                 .fillMaxHeight()
                 //.align(Alignment.CenterVertically)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
@@ -107,7 +107,7 @@ fun GiftCard(
         }
         Column(
             modifier = Modifier
-                .weight(8f)
+                .weight(4f)
                 .padding(4.dp),
         ) {
             Text(

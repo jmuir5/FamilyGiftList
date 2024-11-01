@@ -27,7 +27,11 @@ import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.navigation.Paths
 
 @Composable
-fun SelectableListEntry(giftList: GiftList, state: MutableState<Boolean>, navController: NavHostController){
+fun SelectableListEntry(
+    giftList: GiftList,
+    state: MutableState<Boolean>,
+    navController: NavHostController
+){
     val toggleBackgroundColor =
         if(state.value){
             MaterialTheme.colorScheme.primary
@@ -88,7 +92,9 @@ fun SelectableListEntry(giftList: GiftList, state: MutableState<Boolean>, navCon
 }
 
 @Composable
-fun UnselectableListEntry(giftList: GiftList, navController: NavHostController){
+fun UnselectableListEntry(
+    giftList: GiftList,
+    navController: NavHostController){
     Row(
         modifier = Modifier.Companion
             .fillMaxWidth()

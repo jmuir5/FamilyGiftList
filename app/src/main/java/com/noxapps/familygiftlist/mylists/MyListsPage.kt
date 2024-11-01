@@ -55,7 +55,9 @@ fun MyListsPage(
 
     val expandedListCard = remember{mutableStateOf(-1)}
 
-    val headerSize = remember{ mutableStateOf(IntSize.Zero) }
+    val headerSize = remember{ mutableIntStateOf(0) }
+    val pageSize = remember{ mutableIntStateOf(0) }
+
 
 
     LaunchedEffect(coroutineScope) {
@@ -83,7 +85,7 @@ fun MyListsPage(
             if(showCreateDrawer){
                 CreateListDialogue(
                     state = createDrawerState,
-                    headerSize = headerSize,
+                    drawerSize = pageSize.intValue - headerSize.intValue,
                     scope = coroutineScope,
                     user = user,
                     navController = navController,
@@ -97,6 +99,7 @@ fun MyListsPage(
             coroutineScope = coroutineScope,
             drawerState = createDrawerState,
             headerSize = headerSize,
+            pageSize = pageSize,
             listOfLists = listOfLists,
             expandedListCard = expandedListCard,
             navController = navController
@@ -127,7 +130,7 @@ fun createListPreview() {
             val viewModel = MyListsViewModel(db, auth)
             val headerSize = remember{mutableStateOf(IntSize.Zero)}
 
-            CreateListDialogue(
+            /*CreateListDialogue(
                 state = state,
                 headerSize = headerSize,
                 scope = coroutineScope,
@@ -135,7 +138,7 @@ fun createListPreview() {
                 db = db,
                 navController=navController,
                 viewModel=viewModel
-            )
+            )*/
         }
 
     }
@@ -187,8 +190,12 @@ fun selectableGiftEntryPreview() {
         ){
             val gift = sampleData.sampleGift
             val state = remember{mutableStateOf(false)}
+            val navController = rememberNavController()
 
-            SelectableGiftEntry(gift = gift, state = state)
+            SelectableGiftEntry(
+                gift = gift,
+                state = state,
+                navController = navController)
         }
     }
 }
@@ -207,14 +214,14 @@ fun MyListBodyPreview() {
             val navController = rememberNavController()
             val headerSize = remember{mutableStateOf(IntSize.Zero)}
 
-            MyListsBody(
+            /*MyListsBody(
                 coroutineScope = coroutineScope,
                 drawerState = drawerState,
                 headerSize = headerSize,
                 listOfLists = listOfLists,
                 expandedListCard = expandedListCard,
                 navController = navController
-            )
+            )*/
         }
     }
 }

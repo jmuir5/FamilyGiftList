@@ -36,7 +36,8 @@ import kotlinx.coroutines.launch
 fun MyListsBody(
     coroutineScope: CoroutineScope,
     drawerState: BottomDrawerState,
-    headerSize: MutableState<IntSize>,
+    headerSize: MutableState<Int>,
+    pageSize:MutableState<Int>,
     listOfLists: List<ListWithGifts>,
     expandedListCard: MutableState<Int>,
     navController: NavHostController
@@ -44,16 +45,19 @@ fun MyListsBody(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .onGloballyPositioned { coordinates ->
+                pageSize.value = coordinates.size.height
+            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .onGloballyPositioned { coordinates ->
+                    headerSize.value = coordinates.size.height
+                }
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
-                .height(IntrinsicSize.Min)
-                .onGloballyPositioned { coordinates ->
-                    headerSize.value = coordinates.size
-                },
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(

@@ -611,7 +611,6 @@ fun EditGiftDialogue(
                                 ),
                                 newRelationships = newRelationships,//inital gifts
                                 removedRelationships = removedRelationships,
-                                navController = navController,
                                 coroutineScope = coroutineScope
                             )
                         }

@@ -7,10 +7,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,19 +35,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.noxapps.familygiftlist.R
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
+import com.noxapps.familygiftlist.data.ListWithGifts
 import com.noxapps.familygiftlist.data.User
-import com.noxapps.familygiftlist.mygifts.normaliseLink
 import com.noxapps.familygiftlist.mylists.singlelist.SingleListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -194,7 +190,11 @@ fun CreateListDialogue(
                     .padding(4.dp)
             ) {
                 itemsIndexed(listOfGifts) { index, gift ->
-                    SelectableGiftEntry(gift = gift, state = selectedGifts[index])
+                    SelectableGiftEntry(
+                        gift = gift,
+                        state = selectedGifts[index],
+                        navController = navController
+                    )
                 }
             }
 
@@ -246,6 +246,7 @@ fun CreateListDialogue(
 fun EditListDialogue(
     state: BottomDrawerState,
     reloader: MutableState<Boolean>,
+    initialList: ListWithGifts,
     scope: CoroutineScope,
     drawerSize:Int,
     user: User,
@@ -253,8 +254,8 @@ fun EditListDialogue(
     navController: NavHostController,
     viewModel: SingleListViewModel
 ){
-    var listName by remember { mutableStateOf("") }
-    var listDesc by remember { mutableStateOf("") }
+    var listName by remember { mutableStateOf(initialList.giftList.listName) }
+    var listDesc by remember { mutableStateOf(initialList.giftList.description) }
 
     val enabled = remember { mutableStateOf(true) }
     val textIconColors = MaterialTheme.colorScheme.onPrimaryContainer
@@ -277,7 +278,7 @@ fun EditListDialogue(
 
     LaunchedEffect(coroutineScope) {
         listOfGifts = db.userDao().getOneWithGiftsById(user.userId).gifts//giftDao().getAll()
-        listOfGifts.indices.map {selectedGifts.add(mutableStateOf(false)) }
+        listOfGifts.indices.map {selectedGifts.add(mutableStateOf(initialList.gifts.contains(listOfGifts[it]))) }
 
     }
     LaunchedEffect(state.currentValue) {
@@ -383,7 +384,11 @@ fun EditListDialogue(
                     .padding(4.dp)
             ) {
                 itemsIndexed(listOfGifts) { index, gift ->
-                    SelectableGiftEntry(gift = gift, state = selectedGifts[index])
+                    SelectableGiftEntry(
+                        gift = gift,
+                        state = selectedGifts[index],
+                        navController = navController
+                    )
                 }
             }
 
@@ -426,31 +431,50 @@ fun EditListDialogue(
                         Log.d("MyList", "Button Clicked")
                         emptyCheck = true
                         if (!listNameError) {
+                            //val initialGifts = mutableListOf<Int>()
+                            //(0..<selectedGifts.size).map {
+                            //    if (selectedGifts[it].value) initialGifts.add(
+                            //        listOfGifts[it].giftId
+                            //    )
+                            //}
+
+                            val oldRelationships = mutableListOf<Int>()
                             val initialGifts = mutableListOf<Int>()
-                            (0..<selectedGifts.size).map {
+                            val removedRelationships = mutableListOf<Int>()
+                            val newRelationships = mutableListOf<Int>()
+                            selectedGifts.indices.map {
                                 if (selectedGifts[it].value) initialGifts.add(
                                     listOfGifts[it].giftId
                                 )
                             }
+                            initialList.gifts.indices.map {
+                                oldRelationships.add(initialList.gifts[it].giftId)
+                                if (!initialGifts.contains(initialList.gifts[it].giftId))
+                                    removedRelationships.add(initialList.gifts[it].giftId)
+                            }
+                            (0..<initialGifts.size).map {
+                                if (!oldRelationships.contains(initialGifts[it]))
+                                    newRelationships.add(initialGifts[it])
+                            }
+
                             Log.d("MyList", "error check passed")
                             viewModel.saveList(
                                 enabledState = enabled,
                                 drawerState = state,
                                 reloader = reloader,
                                 listObject = GiftList(
-                                    0,
+                                    initialList.giftList.listId,
                                     user.userId,
                                     "${user.firstName} ${user.lastName}",
                                     listName,
                                     listDesc
                                 ),
-                                initialGifts = initialGifts,//inital gifts
-                                navController = navController,
+                                newRelationships = newRelationships,
+                                removedRelationships = removedRelationships,
                                 coroutineScope = coroutineScope
                             )
                         }
                     }
-                //.padding(10.dp)
             ){
                 Text(
                     modifier = Modifier.Companion
