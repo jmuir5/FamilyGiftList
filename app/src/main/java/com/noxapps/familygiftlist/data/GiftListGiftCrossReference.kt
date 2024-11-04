@@ -9,3 +9,34 @@ data class GiftListGiftCrossReference(
     val giftId:Int,
 ) {
 }
+
+@Entity(primaryKeys = ["userId", "listId"])
+data class UserGiftListCrossReference(
+    val userId:Int,
+    val listId:Int,
+) {
+}
+
+
+/*
+class group object
+val name
+val description
+val list<member Lists>
+
+class memberList
+val userId
+val listId
+
+firebase:
+groups
+L->group id
+    L-> name
+        description
+        adminid
+        members/lists / memberlists
+        L->userID
+            L->listid
+
+
+ */
