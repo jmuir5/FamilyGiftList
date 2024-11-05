@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
 import com.noxapps.familygiftlist.data.User
+import com.noxapps.familygiftlist.data.sampleData
 import com.noxapps.familygiftlist.navigation.loggedCheck
 import com.noxapps.familygiftlist.ui.theme.FamilyGiftListTheme
 import kotlinx.coroutines.MainScope
@@ -40,7 +42,7 @@ import kotlin.system.exitProcess
 @Composable
 fun LoginPage(
     auth: FirebaseAuth,
-    user:User?,
+    user: MutableState<User>,
     db: AppDatabase,
     navHostController: NavHostController,
     viewModel: LoginViewModel = LoginViewModel(
@@ -49,7 +51,7 @@ fun LoginPage(
         navHostController
     )
 ){
-    loggedCheck(navHostController, auth, user )
+    loggedCheck(navHostController, auth, user.value )
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -105,9 +107,9 @@ fun LoginPage(
             ) {
                 LogoCard()
                 if (status.value)
-                    LoginCard(textFieldColors, textIconColor, status, viewModel)
+                    LoginCard(textFieldColors, textIconColor, status, user, viewModel)
                 else
-                    RegisterCard(textFieldColors, textIconColor, status, viewModel)
+                    RegisterCard(textFieldColors, textIconColor, status, user, viewModel)
 
             }
         }
@@ -135,9 +137,10 @@ fun LoginPreview() {
             LocalContext.current,
             AppDatabase::class.java, "gift-app-test-database"
         ).build()
+        val user = remember{mutableStateOf<User>(sampleData.nullUser)}
 
 
-        LoginCard(textFieldColors, textIconColor, state, LoginViewModel(auth, db, navController))
+        LoginCard(textFieldColors, textIconColor, state,user, LoginViewModel(auth, db, navController))
     }
 }
 
@@ -160,8 +163,10 @@ fun RegisterPreview() {
             LocalContext.current,
             AppDatabase::class.java, "gift-app-test-database"
         ).build()
+        val user = remember{mutableStateOf<User>(sampleData.nullUser)}
 
-        RegisterCard(textFieldColors, textIconColor, state, LoginViewModel(auth, db, navController))
+
+        RegisterCard(textFieldColors, textIconColor, state, user, LoginViewModel(auth, db, navController))
     }
 }
 

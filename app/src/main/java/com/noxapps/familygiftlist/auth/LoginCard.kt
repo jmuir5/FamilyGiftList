@@ -43,12 +43,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.noxapps.familygiftlist.R
+import com.noxapps.familygiftlist.data.User
 
 @Composable
 fun LoginCard(
     textFieldColors: TextFieldColors = TextFieldDefaults.colors(),
     textIconColors: Color? = null,
     loginState: MutableState<Boolean>,
+    loggedUser: MutableState<User>,
     viewModel: LoginViewModel
 ){
     val context = LocalContext.current
@@ -98,11 +100,13 @@ fun LoginCard(
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(emailFocReq)
-                .autofill(autofillTypes = listOf(AutofillType.EmailAddress)) {
+                .focusRequester(emailFocReq),
+                /*.autofill(autofillTypes = listOf(AutofillType.EmailAddress)) {
                     //if(email.isEmpty())pwFocReq.requestFocus()
                     email = it
                 },
+
+                 */
             colors = textFieldColors,
             value = email,
             onValueChange = { email = it.replace(" ", "") },
@@ -134,9 +138,10 @@ fun LoginCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(pwFocReq)
-                .autofill(autofillTypes = listOf(AutofillType.Password)) {
+                ,/*.autofill(autofillTypes = listOf(AutofillType.Password)) {
                     password = it
                 },
+                */
             value = password,
             onValueChange = { password = it.replace(" ", "") },
             colors = textFieldColors,
@@ -201,6 +206,7 @@ fun LoginCard(
                                 email,
                                 password,
                                 enabled,
+                                loggedUser,
                                 context,
                                 coroutineScope
                             )
@@ -225,6 +231,7 @@ fun LoginCard(
                         email,
                         password,
                         enabled,
+                        loggedUser,
                         context,
                         coroutineScope
                     )

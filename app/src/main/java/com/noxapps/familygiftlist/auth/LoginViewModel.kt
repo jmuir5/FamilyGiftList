@@ -8,10 +8,13 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.FirebaseDBInteractor
 import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.User
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +34,7 @@ class LoginViewModel(
         email:String,
         password:String,
         enableState: MutableState<Boolean>,
+        loggedUser: MutableState<User>,
         context: Context,
         coroutineScope: CoroutineScope
     ){
@@ -55,6 +59,7 @@ class LoginViewModel(
 
                                 if ( loadedUser.userId != "") {
                                     MainScope().launch {
+                                        loggedUser.value = loadedUser
                                         Log.d("login debug", "load successfull, going to home")
 
                                         navController.navigate(Paths.Home.Path) {
@@ -85,12 +90,14 @@ class LoginViewModel(
                                 .child("User")
                                 .get()
                                 .addOnCompleteListener(){pu ->
-                                    Log.d("pulled data test", pu.result.toString())
                                     val pulledUser = pu.result.getValue(User::class.java)
-                                    Log.d("pulled data test", pulledUser.toString())
                                     coroutineScope.launch {
+
                                         pulledUser?.let {db.userDao().insertOne(it) }
                                         MainScope().launch {
+                                            if (pulledUser != null) {
+                                                loggedUser.value = pulledUser
+                                            }
                                             navController.navigate(Paths.Home.Path){
                                                 popUpTo(Paths.Home.Path) {
                                                     inclusive=true
@@ -98,10 +105,6 @@ class LoginViewModel(
                                             }
                                         }
                                     }
-
-                                }
-
-                                .addOnFailureListener(){
 
                                 }
                         }
@@ -121,7 +124,27 @@ class LoginViewModel(
 
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w("Login", "signInWithEmail:failure", task.exception)
+                    when (task.exception) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            Log.e("Login", "Invalid credentials: ${task.exception?.message}")
+                            Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        is FirebaseAuthInvalidUserException -> {
+                            Log.e("Login", "Invalid user: ${task.exception?.message}")
+                            Toast.makeText(context, "User account not found", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        else ->{
+                            Log.e("Login", "Login failed: ${task.exception?.message}", task.exception)
+                            Toast.makeText(context, "Login failed. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    enableState.value = true // Ensure button is re-enabled
+
+
+
+                    /*Log.w("Login", "signInWithEmail:failure", task.exception)
 
                     Toast.makeText(
                         context,
@@ -130,6 +153,8 @@ class LoginViewModel(
                     ).show()
                     enableState.value = true
                     //updateUI(null)
+
+                     */
                 }
             }
     }
@@ -141,6 +166,7 @@ class LoginViewModel(
         birthday: LocalDate,
         password:String,
         enableState: MutableState<Boolean>,
+        loggedUser: MutableState<User>,
         context: Context,
         coroutineScope: CoroutineScope
     ){
@@ -155,11 +181,13 @@ class LoginViewModel(
                         val newUser =  User(it.uid, email, firstName, lastName, birthday.toString())
                         coroutineScope.launch{
                             db.userDao().insertOne(newUser)
-                            firebaseDB
+                            FirebaseDBInteractor.upsertUser(newUser)
+                            /*firebaseDB
                                 .child(user.uid)
                                 .child("User")
-                                .setValue(newUser)
+                                .setValue(newUser)*/
                             MainScope().launch {
+                                loggedUser.value = newUser
                                 navController.navigate(Paths.Home.Path) {
                                     popUpTo(Paths.Home.Path) {
                                         inclusive = true

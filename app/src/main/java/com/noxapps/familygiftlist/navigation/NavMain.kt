@@ -26,13 +26,13 @@ import com.noxapps.familygiftlist.mylists.singlelist.SingleListPage
 @Composable
 fun NavMain(navController: NavHostController, auth: FirebaseAuth){
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
+    //val coroutineScope = rememberCoroutineScope()
     val db = Room.databaseBuilder(
         context,
         AppDatabase::class.java, "gift-app-database"
     ).fallbackToDestructiveMigration().build()
     val currentUser = remember { mutableStateOf( sampleData.nullUser ) }
-    LaunchedEffect(auth.currentUser) {
+    LaunchedEffect(Unit) {
         try{
             auth.currentUser?.uid?.let { currentUser.value = db.userDao().getOneById(it) }
         }
@@ -55,7 +55,7 @@ fun NavMain(navController: NavHostController, auth: FirebaseAuth){
         composable(Paths.Login.Path) {
             LoginPage(
                 auth,
-                currentUser.value,
+                currentUser,
                 db,
                 navController
             )

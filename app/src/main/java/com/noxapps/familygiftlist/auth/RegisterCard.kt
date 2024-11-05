@@ -17,8 +17,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -50,7 +52,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.noxapps.familygiftlist.R
+import com.noxapps.familygiftlist.data.User
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -60,13 +64,17 @@ fun RegisterCard(
     textFieldColors: TextFieldColors = TextFieldDefaults.colors(),
     textIconColors: Color? = null,
     registerState: MutableState<Boolean>,
+    loggedUser: MutableState<User>,
     viewModel: LoginViewModel
 ){
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
-    var birthdayState = rememberDatePickerState()
+    var birthdayState = rememberDatePickerState(
+        initialSelectedDateMillis = System.currentTimeMillis(),
+        selectableDates = PastOrPresentSelectableDates
+    )
     var birthdayDialogueState by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -144,10 +152,10 @@ fun RegisterCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(firstNameFocReq)
-                .autofill(autofillTypes = listOf(AutofillType.PersonFirstName)) {
+                ,/*.autofill(autofillTypes = listOf(AutofillType.PersonFirstName)) {
                     if (firstName.isEmpty()) bDayFocReq.requestFocus()
                     firstName = it
-                },
+                },*/
             colors = textFieldColors,
             value = firstName,
             onValueChange = { if (it.length < 32) firstName = it },
@@ -181,10 +189,10 @@ fun RegisterCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(lastNameFocReq)
-                .autofill(autofillTypes = listOf(AutofillType.PersonLastName)) {
+                ,/*.autofill(autofillTypes = listOf(AutofillType.PersonLastName)) {
                     if (lastName.isEmpty()) bDayFocReq.requestFocus()
                     lastName = it
-                },
+                },*/
             colors = textFieldColors,
             value = lastName,
             onValueChange = { if (it.length < 32) lastName = it },
@@ -285,10 +293,10 @@ fun RegisterCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(emailFocReq)
-                .autofill(autofillTypes = listOf(AutofillType.EmailAddress)) {
+                ,/*.autofill(autofillTypes = listOf(AutofillType.EmailAddress)) {
                     if (email.isEmpty()) pwFocReq.requestFocus()
                     email = it
-                },
+                },*/
             colors = textFieldColors,
             value = email,
             onValueChange = { email = it.replace(" ", "") },
@@ -320,10 +328,10 @@ fun RegisterCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(pwFocReq)
-                .autofill(autofillTypes = listOf(AutofillType.NewPassword)) {
+                ,/*.autofill(autofillTypes = listOf(AutofillType.NewPassword)) {
                     password = it
                     confirmPassword = it
-                },
+                },*/
             value = password,
             onValueChange = { password = it.replace(" ", "") },
             colors = textFieldColors,
@@ -375,10 +383,10 @@ fun RegisterCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(confFocReq)
-                .autofill(autofillTypes = listOf(AutofillType.NewPassword)) {
+                ,/*.autofill(autofillTypes = listOf(AutofillType.NewPassword)) {
                     password = it
                     confirmPassword = it
-                },
+                },*/
             value = confirmPassword,
             onValueChange = { confirmPassword = it.replace(" ", "") },
             colors = textFieldColors,
@@ -437,22 +445,25 @@ fun RegisterCard(
                                     passwordMalformedError || emailMalformedError || emailEmptyError ||
                                     passwordEmptyError || confirmPasswordEmptyError)
                         ) {
-                            Toast.makeText(
-                                context,
-                                "Please correct the above errors",
-                                Toast.LENGTH_SHORT,
-                            )
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Please correct the above errors",
+                                    Toast.LENGTH_SHORT,
+                                )
                                 .show()
                         } else {
                             viewModel.register(
                                 firstName = firstName,
                                 lastName = lastName,
                                 email = email,
-                                birthday = Instant.ofEpochMilli(birthdayState.selectedDateMillis!!)
+                                birthday = Instant
+                                    .ofEpochMilli(birthdayState.selectedDateMillis!!)
                                     .atZone(zoneId)
                                     .toLocalDate(),
                                 password = password,
                                 enableState = enabled,
+                                loggedUser = loggedUser,
                                 context = context,
                                 coroutineScope = coroutineScope
                             )
@@ -485,6 +496,7 @@ fun RegisterCard(
                         password = password,
                         enableState = enabled,
                         context = context,
+                        loggedUser = loggedUser,
                         coroutineScope = coroutineScope
                     )
                 }
@@ -516,4 +528,17 @@ fun RegisterCard(
     }
 
 
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+object PastOrPresentSelectableDates: SelectableDates {
+    @ExperimentalMaterial3Api
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+        return utcTimeMillis <= System.currentTimeMillis()
+    }
+
+    @ExperimentalMaterial3Api
+    override fun isSelectableYear(year: Int): Boolean {
+        return year <= LocalDate.now().year
+    }
 }
