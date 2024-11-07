@@ -10,6 +10,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.values
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.FirebaseDBInteractor
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.GiftListGiftCrossReference
@@ -58,42 +59,25 @@ class HomeViewModel(
     }
     private fun updateLists(coroutineScope: CoroutineScope){
         if(user!=null) {
-            firebaseDB
-                .child(user.userId)
-                .child("Lists")
-                .get()
-                .addOnCompleteListener() { snapshot ->
-                    for (element in snapshot.result.children) {
-                        val pulledList = element.getValue(GiftList::class.java)
-                        pulledList?.let {
-                            coroutineScope.launch {
-                                db.giftListDao().upsert(it)
-                            }
-                        }
-
+            FirebaseDBInteractor.getAllLists(user.userId){ _, lists->
+                lists.forEach{
+                    coroutineScope.launch {
+                        db.giftListDao().upsert(it)
                     }
-
                 }
+            }
         }
     }
     private fun updateGifts(coroutineScope: CoroutineScope){
         if(user!=null) {
-            firebaseDB
-                .child(user.userId)
-                .child("Gifts")
-                .get()
-                .addOnCompleteListener() { snapshot ->
-                    for (element in snapshot.result.children) {
-                        val pulledGift = element.getValue(Gift::class.java)
-                        pulledGift?.let {
-                            coroutineScope.launch {
-                                db.giftDao().upsert(it)
-                            }
-                        }
-
+            FirebaseDBInteractor.getAllGifts(user.userId){ _, gifts->
+                gifts.forEach{
+                    coroutineScope.launch {
+                        db.giftDao().upsert(it)
                     }
-
                 }
+
+            }
         }
     }
     private fun updateRelationships(coroutineScope: CoroutineScope){

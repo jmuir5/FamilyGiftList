@@ -10,6 +10,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.navigation.Paths
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.FirebaseDBInteractor
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftList
 import com.noxapps.familygiftlist.data.GiftListGiftCrossReference
@@ -18,8 +19,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MyGiftsViewModel(val db:AppDatabase, val auth: FirebaseAuth): ViewModel() {
-    private val firebaseDB = Firebase.database.reference
-
     fun saveGift(
         enabledState: MutableState<Boolean>,
         drawerState: BottomDrawerState,
@@ -47,19 +46,7 @@ class MyGiftsViewModel(val db:AppDatabase, val auth: FirebaseAuth): ViewModel() 
                 }
                 //to server
                 val newGift = Gift(giftObject, newId.toInt())
-                firebaseDB
-                    .child("${auth.currentUser?.uid}")
-                    .child("Gifts")
-                    .child("${newGift.giftId}")
-                    .setValue(newGift)
-                initialLists.forEach { listId ->
-                    firebaseDB
-                        .child("${auth.currentUser?.uid}")
-                        .child("Relationships")
-                        .child("$listId")
-                        .child("${newGift.giftId}")
-                        .setValue(true)
-                }
+                auth.currentUser?.uid?.let { FirebaseDBInteractor.upsertGift(it, newGift, initialLists) }
                 enabledState.value = true
                 coroutineScope.launch {
                     drawerState.close()

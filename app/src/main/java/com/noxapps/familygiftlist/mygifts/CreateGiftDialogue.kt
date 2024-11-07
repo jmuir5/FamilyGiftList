@@ -609,8 +609,7 @@ fun EditGiftDialogue(
                                     initialGift.gift.purchasedBy,
                                     initialGift.gift.purchaseProof
                                 ),
-                                newRelationships = newRelationships,//inital gifts
-                                removedRelationships = removedRelationships,
+                                initialRelationships = initialLists,
                                 coroutineScope = coroutineScope
                             )
                         }

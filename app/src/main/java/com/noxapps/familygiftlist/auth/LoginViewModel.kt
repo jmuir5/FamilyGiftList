@@ -27,9 +27,6 @@ class LoginViewModel(
     val db:AppDatabase,
     val navController: NavController
 ):ViewModel() {
-    private val firebaseDB = Firebase.database.reference
-
-
     fun login(
         email:String,
         password:String,
@@ -54,9 +51,6 @@ class LoginViewModel(
                                 val loadedUser = db.userDao().getOneById(user.uid)
                                 Log.d("login debug", "loaded user $loadedUser")
                                 Log.d("login debug", "loaded user ${loadedUser.userId}")
-
-
-
                                 if ( loadedUser.userId != "") {
                                     MainScope().launch {
                                         loggedUser.value = loadedUser
@@ -71,33 +65,16 @@ class LoginViewModel(
                                 } else {
                                     throw Exception("load failed")
                                 }
-                                /*Log.d("login debug", "loaded user = ${db.userDao().getOneById(user.uid)}")
-                            MainScope().launch {
-                                Log.d("login debug", "load successfull, going to home")
 
-                                navController.navigate(Paths.Home.Path){
-                                    popUpTo(Paths.Home.Path) {
-                                        inclusive=true
-                                    }
-                                }
-                            }*/
                             } ?: throw Exception("load failed")
                         } catch (e:Exception){
                             Log.d("login debug", "load failed, pulling data")
-
-                            firebaseDB
-                                .child(user!!.uid)
-                                .child("User")
-                                .get()
-                                .addOnCompleteListener(){pu ->
-                                    val pulledUser = pu.result.getValue(User::class.java)
+                            FirebaseDBInteractor
+                                .getUser(user!!.uid){ _, pulledUser->
                                     coroutineScope.launch {
-
-                                        pulledUser?.let {db.userDao().insertOne(it) }
+                                        db.userDao().insertOne(pulledUser)
                                         MainScope().launch {
-                                            if (pulledUser != null) {
-                                                loggedUser.value = pulledUser
-                                            }
+                                            loggedUser.value = pulledUser
                                             navController.navigate(Paths.Home.Path){
                                                 popUpTo(Paths.Home.Path) {
                                                     inclusive=true
@@ -105,22 +82,10 @@ class LoginViewModel(
                                             }
                                         }
                                     }
-
                                 }
+
                         }
                     }
-
-                    /*firebaseDB
-                        .child(user!!.uid)
-                        .child("User")
-                        .get()
-                        .addOnCompleteListener(){
-                            val lists = it.result.getValue(User::class.java)
-                            Log.d("pulled data test", lists.toString())
-                        }
-                        .addOnFailureListener(){
-
-                        }*/
 
                 } else {
                     // If sign in fails, display a message to the user.

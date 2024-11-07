@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.noxapps.familygiftlist.data.AppDatabase
+import com.noxapps.familygiftlist.data.FirebaseDBInteractor
 import com.noxapps.familygiftlist.data.Gift
 import com.noxapps.familygiftlist.data.GiftListGiftCrossReference
 import com.noxapps.familygiftlist.data.GiftWithLists
@@ -23,15 +24,13 @@ class SingleGiftViewModel(
      val navController: NavHostController
 
 ): ViewModel() {
-     private val firebaseDB = Firebase.database.reference
 
      fun saveGift(
           enabledState: MutableState<Boolean>,
           reloader: MutableState<Boolean>,
           drawerState: BottomDrawerState,
           giftObject: Gift,
-          newRelationships:List<Int>,
-          removedRelationships:List<Int>,
+          initialRelationships:List<Int>,
           coroutineScope: CoroutineScope
      ){
           enabledState.value = false
@@ -39,7 +38,16 @@ class SingleGiftViewModel(
                //local
                coroutineScope.launch {
                     db.giftDao().update(giftObject)
-                    newRelationships.forEach { listId ->
+                    var oldRelationships = db.referenceDao().getByGiftId(giftObject.giftId)
+                    oldRelationships.forEach { relationship ->
+                         db.referenceDao().delete(
+                              GiftListGiftCrossReference(
+                                   listId = relationship.listId,
+                                   giftId = giftObject.giftId
+                              )
+                         )
+                    }
+                    initialRelationships.forEach { listId ->
                          db.referenceDao().insert(
                               GiftListGiftCrossReference(
                                    listId = listId,
@@ -48,38 +56,11 @@ class SingleGiftViewModel(
                          )
 
                     }
-                    removedRelationships.forEach { listId ->
-                         db.referenceDao().delete(
-                              GiftListGiftCrossReference(
-                                   listId = listId,
-                                   giftId = giftObject.giftId
-                              )
-                         )
 
-                    }
                     //to server
                     //val newGift = Gift(giftObject, giftObject.giftId)
-                    firebaseDB
-                         .child("${auth.currentUser?.uid}")
-                         .child("Gifts")
-                         .child("${giftObject.giftId}")
-                         .setValue(giftObject)
-                    removedRelationships.forEach{ listId->
-                         firebaseDB
-                              .child("${auth.currentUser?.uid}")
-                              .child("Relationships")
-                              .child("$listId")
-                              .child("${giftObject.giftId}")
-                              .setValue(false)
-                    }
-                    newRelationships.forEach { listId ->
-                         firebaseDB
-                              .child("${auth.currentUser?.uid}")
-                              .child("Relationships")
-                              .child("$listId")
-                              .child("${giftObject.giftId}")
-                              .setValue(true)
-                    }
+                    FirebaseDBInteractor.upsertGift(auth.currentUser?.uid!!, giftObject, initialRelationships)
+
                     enabledState.value = true
                     //coroutineScope.launch {
                          drawerState.close()
@@ -107,25 +88,7 @@ class SingleGiftViewModel(
           coroutineScope: CoroutineScope
      ){
           auth.uid?.let {
-               firebaseDB.child(it).child("Gifts").child(giftObject.gift.giftId.toString()).removeValue()
-                    .addOnSuccessListener {
-                         Log.d("gift Deletion","gift deleted")
-                    }
-                    .addOnFailureListener{
-                         Log.d("gift Deletion","gift deleted")
-                    }
-               giftObject.lists.forEach{ list ->
-                    firebaseDB.child(it).child("Relationships")
-                         .child(list.listId.toString())
-                         .child("${giftObject.gift.giftId}")
-                         .setValue(false)
-                         .addOnSuccessListener {
-                              Log.d("gift Deletion","relationship ${list.listId} - ${giftObject.gift.giftId} deleted")
-                         }
-                         .addOnFailureListener{
-                              Log.d("gift Deletion","gift deleted")
-                         }
-               }
+               FirebaseDBInteractor.deleteGift(it, giftObject)
                coroutineScope.launch {
                     db.giftDao().delete(giftObject.gift)
                     val references = db.referenceDao().getByGiftId(giftObject.gift.giftId)

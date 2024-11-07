@@ -469,8 +469,7 @@ fun EditListDialogue(
                                     listName,
                                     listDesc
                                 ),
-                                newRelationships = newRelationships,
-                                removedRelationships = removedRelationships,
+                                initialRelationships = initialGifts,
                                 coroutineScope = coroutineScope
                             )
                         }
