@@ -82,26 +82,15 @@ class HomeViewModel(
     }
     private fun updateRelationships(coroutineScope: CoroutineScope){
         if(user!=null) {
-            firebaseDB
-                .child(user.userId)
-                .child("Relationships")
-                .get()
-                .addOnCompleteListener() { snapshot ->
-                    for (list in snapshot.result.children) {
-                        val listId = list.key?.toInt()?:0
-                        for(entry in list.children){
-                            val result = entry.getValue(Boolean::class.java)
-                            result?.let {
-                                if (it) {
-                                    val giftId = entry.key?.toInt()?:0
-                                    coroutineScope.launch {
-                                        db.referenceDao().upsert(GiftListGiftCrossReference(listId, giftId))
-                                    }
-                                }
-                            }
-                        }
+            FirebaseDBInteractor.getAllRelationships(user.userId){ _, relationships->
+                relationships.forEach{ relationship ->
+                    coroutineScope.launch {
+                        db.referenceDao().upsert(relationship)
                     }
                 }
+
+            }
+
         }
     }
 

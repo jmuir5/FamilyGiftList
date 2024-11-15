@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class FirebaseDBInteractor {
     companion object {
@@ -254,9 +255,22 @@ class FirebaseDBInteractor {
                 .addOnFailureListener(){
                     onFail?.invoke(it)
                 }
-                .addOnSuccessListener() {pg ->
-                    val references = pg.children.mapNotNull { it.getValue(GiftListGiftCrossReference::class.java) }
-                    onSuccess(pg, references)
+                .addOnSuccessListener() {pr ->
+                    val references = mutableListOf<GiftListGiftCrossReference>()
+                    pr.children.mapNotNull { list ->
+                        val listId = list.key?.toInt()?:0
+                        for(entry in list.children){
+                            val result = entry.getValue(Boolean::class.java)
+                            result?.let {
+                                if (it) {
+                                    val giftId = entry.key?.toInt()?:0
+                                    references.add(GiftListGiftCrossReference(listId, giftId))
+                                }
+                            }
+                        }
+
+                    }
+                    onSuccess(pr, references)
                 }
                 .addOnCompleteListener(){
                     onComplete?.invoke(it)
